@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Toss';
+    src: url('../../assets/fonts/TossFaceFontMac.ttf') format('truetype');
+}
+
+* {
+    font-family: 'Toss';
+}

@@ -1,0 +1,49 @@
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../assets/bg.png');
+    background-size: 80%;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #6b6b6b;
+    font-size: 1rem; 
+    text-align: center;
+}
+
+.logo {
+    width: 18.75rem; 
+    transform: translateY(-2rem);
+    z-index: 1;
+}
+
+.wrapper p {
+    margin: 0.3rem 0;
+}
+
+.p1 {
+    font-size: 1.875rem; 
+    font-weight: bold;
+    margin-top: -1rem !important;
+}
+
+.p2 {
+    margin-bottom: 2rem !important;
+    margin-top: -0.5rem !important;
+}
+
+/* 로그인 버튼들 */
+.login-button {
+    width: 12.5rem; /* 200px */
+    margin-bottom: 0.8rem;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-1px);
+    cursor: pointer;
+}
