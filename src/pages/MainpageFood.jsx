@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import "./css/Mainpage-food.css"
-import logo from "../assets/logo.png";
-import { useState } from "react";
-
-const MainpageFood = () => {
-=======
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import food1 from "../assets/food1.png";
@@ -14,7 +7,6 @@ import food4 from "../assets/food4.png";
 import food5 from "../assets/food5.png";
 import styled,{keyframes} from "styled-components";
 const MainPageFood = () => {
->>>>>>> 6bc8a7b987df16a0f1db7876ba9e33c82a101dab
     const [selectedIndex, setSelectedIndex] = useState(null);
     
     const Wrap = styled.div`
@@ -251,8 +243,4 @@ const MainPageFood = () => {
     )
 }
 
-<<<<<<< HEAD
-export default MainpageFood;
-=======
 export default MainPageFood;
->>>>>>> 6bc8a7b987df16a0f1db7876ba9e33c82a101dab

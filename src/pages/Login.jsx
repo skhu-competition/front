@@ -1,8 +1,4 @@
 import logo from '../assets/logo.png';
-<<<<<<< HEAD
-import './Login.css';
-=======
->>>>>>> 6bc8a7b987df16a0f1db7876ba9e33c82a101dab
 import googleLogin from '../assets/google-login.png';
 import kakaoLogin from '../assets/kakao-login.png';
 import bg from '../assets/bg.png';
