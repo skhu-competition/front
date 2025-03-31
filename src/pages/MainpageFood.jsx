@@ -1,8 +1,8 @@
-import "./css/MainPage.css"
+import "./css/Mainpage-food.css"
 import logo from "../assets/logo.png";
 import { useState } from "react";
 
-const MainPage = () => {
+const MainpageFood = () => {
     const [selectedIndex, setSelectedIndex] = useState(null);
 
     
@@ -49,4 +49,4 @@ const MainPage = () => {
     )
 }
 
-export default MainPage;
+export default MainpageFood;

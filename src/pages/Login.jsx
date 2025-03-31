@@ -1,5 +1,5 @@
 import logo from '../assets/logo.png';
-import './css/Login.css';
+import './Login.css';
 import googleLogin from '../assets/google-login.png';
 import kakaoLogin from '../assets/kakao-login.png'
 const Login = () => {
