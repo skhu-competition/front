@@ -54,8 +54,16 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.category1 {
+/* .category1 {
     margin: 0;
     padding: 0;
     list-style: none;
+} */
+
+.map {
+    border-radius: 2rem;
+    margin-top: 150px;
+    margin-left: 100px;
+    width: 1500px;
+    height: 570px;
 }
