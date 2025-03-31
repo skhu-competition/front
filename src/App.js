@@ -13,7 +13,7 @@ function App() {
   if(isMobile) {
     return (
       <div className='mobile-display'>
-        <div style={{flexDirection:"row", gap:"0", justifyContent:"center", alignItems:"center"}}>
+        <div>
             데스크톱만 가능합니다.
         </div>
       </div>
