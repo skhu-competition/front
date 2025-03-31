@@ -28,7 +28,7 @@ const MainPageMap = () => {
   const container = useRef(null);
   const navigate = useNavigate();
 
-  const pathMap = []
+  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/'];
 
   useEffect(() => {
     const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
@@ -108,7 +108,10 @@ const MainPageMap = () => {
           <li
             key={i}
             className={selectedIndex === i ? "active" : ""}
-            onClick={() => setSelectedIndex(i)}
+            onClick={() => {
+                setSelectedIndex(i);
+                navigate(routes[i]);
+            }}
           ></li>
         ))}
       </ul>
