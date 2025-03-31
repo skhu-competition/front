@@ -96,7 +96,7 @@ const MainPageFood = () => {
         transform: translateX(0);
         }
         100% {
-        transform: translateX(-100%);
+        transform: translateX(-135rem);
         }
     `;
     const Category1 = styled.ul`
@@ -106,7 +106,7 @@ const MainPageFood = () => {
         display: flex;
         gap: 2rem;
         width: max-content;
-        animation: ${slideLoop} 20s linear infinite;
+        animation: ${slideLoop} 15s linear infinite;
         ${Category1Wrapper}:hover & {
             animation-play-state: paused;
         }
@@ -214,6 +214,24 @@ const MainPageFood = () => {
                             <Category1List>
                                 <img src={food5} alt="food5" className="foodImg"/>
                                 <div className="hoverText"><strong>Top5.</strong> 수목원국수</div>
+                            </Category1List>
+
+
+                            <Category1List>
+                                <img src={food1} alt="food1" className="foodImg"/>
+                                <div className="hoverText"><strong>Top1.</strong> 이천성모메존칼국수</div>
+                            </Category1List>
+                            <Category1List>
+                                <img src={food2} alt="food2" className="foodImg"/>
+                                <div className="hoverText"><strong>Top2.</strong> 다원국수</div>
+                            </Category1List>
+                            <Category1List>
+                                <img src={food3} alt="food3" className="foodImg"/>
+                                <div className="hoverText"><strong>Top3.</strong> 우가본</div>
+                            </Category1List>
+                            <Category1List>
+                                <img src={food4} alt="food4" className="foodImg"/>
+                                <div className="hoverText"><strong>Top4.</strong> 본가 칡냉면</div>
                             </Category1List>
 
                         </Category1>
