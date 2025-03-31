@@ -80,9 +80,10 @@ const MainPageFood = () => {
 
     const Intro = styled.p`
         width: 100%;
-        font-size: 1.5rem;
+        font-size: 30px;
         font-weight: bold;
         margin-bottom: 2rem;
+        margin-top: 30px;
     `
 
     const Category1Wrapper = styled.div`
