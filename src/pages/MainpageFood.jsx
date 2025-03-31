@@ -96,7 +96,7 @@ const MainPageFood = () => {
         transform: translateX(0);
         }
         100% {
-        transform: translateX(-133rem);
+        transform: translateX(-100%);
         }
     `;
     const Category1 = styled.ul`
@@ -106,7 +106,7 @@ const MainPageFood = () => {
         display: flex;
         gap: 2rem;
         width: max-content;
-        animation: ${slideLoop} 15s linear infinite;
+        animation: ${slideLoop} 20s linear infinite;
         ${Category1Wrapper}:hover & {
             animation-play-state: paused;
         }
