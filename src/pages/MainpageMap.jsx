@@ -2,7 +2,6 @@ import "./css/Mainpage-map.css"
 import logo from "../assets/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { distance } from "framer-motion";
 
 const { naver } = window;
 
