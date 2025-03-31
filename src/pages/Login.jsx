@@ -22,9 +22,9 @@ const Wrapper = styled.div`
 `
 
 const Logo = styled.img`
-    width: 18.75rem; 
-    transform: translateY(-2rem);
-    z-index: 1;
+  width: 18.75rem; 
+  transform: translateY(-2rem);
+  z-index: 1;
 `
 
 const P1 = styled.p`
