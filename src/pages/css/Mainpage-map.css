@@ -18,11 +18,17 @@
 }
 
 .bg {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
     background-color: white;
     width: calc(100% - 15rem);
     height: 85vh;
     border-top-left-radius: 3rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
 }
 
 .index_list {
@@ -37,7 +43,7 @@
 }
 
 
-.index_list>li {
+.index_list > li {
     width: 5rem;
     height: 7rem;
     background-color: #fafcff;
@@ -48,9 +54,17 @@
     overflow: hidden;
 }
 
-.index_list>li:hover {
+.index_list > li:hover {
+    cursor: pointer;
     height: 10rem;
     background-color: #dceaff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.index_list > li.active {
+    cursor: pointer;
+    height: 10rem;
+    background-color: #9DBDED;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -62,8 +76,16 @@
 
 .map {
     border-radius: 2rem;
-    margin-top: 150px;
-    margin-left: 100px;
-    width: 1500px;
-    height: 570px;
+    margin-top: 20px;
+    /* margin-left: 100px; */
+    width: 1520px;
+    height: 600px;
+}
+
+.intro {
+    margin-top: 30px;
+    margin-left: 50px;
+    margin-right: auto;
+    /* background-color: #dceaff; */
+    font-size: 30px;
 }

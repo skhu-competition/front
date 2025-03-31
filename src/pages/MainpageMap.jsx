@@ -1,10 +1,12 @@
 import "./css/Mainpage-map.css"
 import logo from "../assets/logo.png";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { naver } = window;
 
 const MainPageMap = () => {
+
+    const [selectedIndex, setSelectedIndex] = useState(2);
 
     const container = useRef(null);
     useEffect(() => {
@@ -56,12 +58,16 @@ const MainPageMap = () => {
         <div className="wrap">
             <img src={logo} alt="logo" className="title"/>
             <ul className="index_list">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
+              {[0,1,2,3].map((i) => (
+                 <li
+                   key={i}
+                   className={selectedIndex === i ? "active" : ""}
+                   onClick={() => setSelectedIndex(i)}
+                 ></li>
+               ))}
             </ul>
             <div className="bg">
+                <p className="intro">회대 지도</p>
                 <div className="map" ref={ container }></div>
             </div>
             
