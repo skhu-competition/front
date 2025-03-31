@@ -78,7 +78,7 @@
     border-radius: 2rem;
     margin-top: 20px;
     /* margin-left: 100px; */
-    width: 1520px;
+    width: calc(100% - 10rem);
     height: 600px;
 }
 
