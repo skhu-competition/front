@@ -1,36 +1,128 @@
-import "./css/Mainpage-map.css"
+import "./css/Mainpage-map.css";
 import logo from "../assets/logo.png";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 const { naver } = window;
-
-const markerData = [
-  {
-    name: "다원국수",
-    position: new naver.maps.LatLng(37.489306, 126.825079),
-    description: "국수 맛집.",
-    address: "서울 구로구 경인로 22",
-    distance: "학교 정문 걸어서 2분",
-  },
-  {
-    name: "국수나무",
-    position: new naver.maps.LatLng(37.488197, 126.825349),
-    description: "밥먹기 무난무난",
-    address: "서울 구로구 연동로 320",
-    distance: "학교 새천년관 지하 1층",
-  },
-];
 
 const MainPageMap = () => {
   const [selectedIndex, setSelectedIndex] = useState(2);
   const container = useRef(null);
+  const mapRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 지도 중심 좌표를 컴포넌트 밖에서 선언
+  const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
 
   const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/'];
 
+  const Wrap = styled.div`
+    width: 100%;
+    height: 100vh;
+    background-color: #E0ECFD;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  `;
+
+  const Logo = styled.img`
+    position: absolute;
+    width: 13rem; 
+    top: 3rem;
+    left: 1rem;
+    cursor: pointer;
+    z-index: 2;
+  `;
+
+  const Bg = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: calc(100% - 15rem);
+    height: 85vh;
+    border-top-left-radius: 3rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+  `;
+
+  const Index_list = styled.ul`
+    margin-top: 1.5rem;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-self: center;
+    flex-direction: column;
+    gap: 2rem;
+  `;
+
+  const Index = styled.div`
+    width: 5rem;
+    height: 7rem;
+    background-color: #fafcff;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    &:hover {
+      cursor: pointer;
+      height: 10rem;
+      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+    }
+  `;
+
+  const Page1 = styled.div`
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 2rem 5rem;
+    box-sizing: border-box;
+  `;
+
+  const Intro = styled.p`
+    width: 100%;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    margin-top: 30px;
+  `;
+
+  const Map = styled.div`
+    border-radius: 2rem;
+    margin-top: 20px;
+    width: 100%;
+    height: 600px;
+  `;
+
   useEffect(() => {
-    const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
+    if (!container.current || !naver || !naver.maps) return;
+
+    const markerData = [
+      {
+        name: "다원국수",
+        position: new naver.maps.LatLng(37.489306, 126.825079),
+        description: "국수 맛집.",
+        address: "서울 구로구 경인로 22",
+        distance: "학교 정문 걸어서 2분",
+      },
+      {
+        name: "국수나무",
+        position: new naver.maps.LatLng(37.488197, 126.825349),
+        description: "밥먹기 무난무난",
+        address: "서울 구로구 연동로 320",
+        distance: "학교 새천년관 지하 1층",
+      },
+    ];
 
     const map = new naver.maps.Map(container.current, {
       center: skhu_position,
@@ -41,6 +133,9 @@ const MainPageMap = () => {
         position: naver.maps.Position.TOP_RIGHT,
       },
     });
+
+    // 지도 인스턴스를 ref에 저장
+    mapRef.current = map;
 
     markerData.forEach(({ name, position, description, address, distance }) => {
       const marker = new naver.maps.Marker({
@@ -59,7 +154,7 @@ const MainPageMap = () => {
                     <span class="stars">★☆☆☆☆</span>
                     <span class="review">(0건) 리뷰 0</span>
                 </div>
-                    <div class="info-address">
+                <div class="info-address">
                     ${address}<br />
                     ${distance}
                 </div>
@@ -76,7 +171,6 @@ const MainPageMap = () => {
         borderWidth: 0,
         disableAnchor: true,
         backgroundColor: 'transparent',
-
         pixelOffset: new naver.maps.Point(0, -28),
       });
 
@@ -85,40 +179,64 @@ const MainPageMap = () => {
           infowindow.close();
         } else {
           infowindow.open(map, marker);
-
           naver.maps.Event.once(map, 'idle', function() {
             const closeBtn = document.querySelector('.close-btn');
-            if(closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    infowindow.close();
-                });
+            if (closeBtn) {
+              closeBtn.addEventListener('click', () => {
+                infowindow.close();
+              });
             }
           });
         }
       });
     });
-  }, []);
+
+    // 초기 로드 시 지도 컨테이너 크기 재계산
+    setTimeout(() => {
+      naver.maps.Event.trigger(map, "resize");
+      map.setCenter(skhu_position);
+    }, 100);
+  }, [skhu_position]);
+
+  // 지도 새로고침 함수: 저장해둔 mapRef를 이용해 리사이즈 이벤트 발생
+  const refreshMap = () => {
+    if (mapRef.current && naver && naver.maps) {
+      setTimeout(() => {
+        naver.maps.Event.trigger(mapRef.current, "resize");
+        mapRef.current.setCenter(skhu_position);
+      }, 100);
+    }
+  };
 
   return (
-    <div className="wrap">
-      <img src={logo} alt="logo" className="title" />
-      <ul className="index_list">
+    <Wrap>
+      <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
+      <Index_list>
         {[0, 1, 2, 3].map((i) => (
-          <li
+          <Index
             key={i}
-            className={selectedIndex === i ? "active" : ""}
+            active={selectedIndex === i}
             onClick={() => {
+              // 이미 해당 경로에 있다면 (특히 Index 2) refreshMap 호출
+              if (routes[i] === location.pathname) {
+                if (i === 2) {
+                  refreshMap();
+                }
+              } else {
                 setSelectedIndex(i);
                 navigate(routes[i]);
+              }
             }}
-          ></li>
+          />
         ))}
-      </ul>
-      <div className="bg">
-        <p className="intro">회대 지도</p>
-        <div className="map" ref={container}></div>
-      </div>
-    </div>
+      </Index_list>
+      <Bg>
+        <Page1>
+          <Intro>회대 지도</Intro>
+          <Map ref={container} />
+        </Page1>
+      </Bg>
+    </Wrap>
   );
 };
 
