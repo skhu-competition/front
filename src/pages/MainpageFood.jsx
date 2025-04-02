@@ -57,14 +57,18 @@ const MainPageFood = () => {
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
         overflow: hidden;
+        transition: background-color 0.3s ease, max-height 0.3s ease;
     
         &:hover {
         cursor: pointer;
-        background-color: #dceaff;
+        background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
         }
     `;
+
+  
+  
+  
   
   
     const Page1 = styled.div`
