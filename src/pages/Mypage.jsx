@@ -72,8 +72,8 @@ const Mypage = () => {
     const Page1 = styled.div`
         display: flex;
         flex-direction: column; 
-        justify-content: flex-start;
-        align-items: flex-start;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         height: 100%;
         padding: 2rem 5rem;
@@ -87,7 +87,32 @@ const Mypage = () => {
         margin-bottom: 2rem;
         margin-top: 30px;
     `;
+    
+    const MyUl = styled.ul`
+        display: flex;
+        width: 100%;
+        height: 100%;
+        list-style: none;
+        gap: 2rem;
 
+        & > li{
+            height: 100%;
+            border-radius: 2rem;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        }
+        
+    `
+
+    const Li1 = styled.li`
+        flex: 1;
+        background: linear-gradient(to bottom, #E0ECFD 0%, #E0ECFD 40%, #fff 40%, #fff 100%);
+    `
+
+    const Li2 = styled.li`
+        flex: 2;
+    `
+    
     return (
         <Wrap>
             <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
@@ -107,6 +132,12 @@ const Mypage = () => {
             <Bg>
                 <Page1>
                     <Intro>마이페이지</Intro>
+                    <MyUl>
+                        <Li1>
+                        </Li1>
+                        <Li2>
+                        </Li2>
+                    </MyUl>
                 </Page1>
             </Bg>
         </Wrap>
