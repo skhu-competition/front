@@ -50,7 +50,7 @@ const MainPageMap = () => {
     position: relative;
   `;
 
-  const Index_list = styled.ul`
+  const IndexList = styled.ul`
     margin-top: 1.5rem;
     display: flex;
     margin: 0;
@@ -63,8 +63,8 @@ const MainPageMap = () => {
 
   const Index = styled.div`
     width: 5rem;
-    height: 7rem;
-    background-color: #fafcff;
+    height: ${({ active }) => (active ? '10rem' : '7rem')};
+    background-color: ${({ active }) => (active ? '#9DBDED' : '#FAFCFF')};
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -73,8 +73,7 @@ const MainPageMap = () => {
 
     &:hover {
       cursor: pointer;
-      height: 10rem;
-      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+      background-color: #dceaff;
     }
   `;
 
@@ -211,7 +210,7 @@ const MainPageMap = () => {
   return (
     <Wrap>
       <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
-      <Index_list>
+      <IndexList>
         {[0, 1, 2, 3].map((i) => (
           <Index
             key={i}
@@ -229,7 +228,7 @@ const MainPageMap = () => {
             }}
           />
         ))}
-      </Index_list>
+      </IndexList>
       <Bg>
         <Page1>
           <Intro>회대 지도</Intro>
