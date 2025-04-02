@@ -3,7 +3,8 @@ import Login from './pages/Login';
 import MainPageHoney from './pages/MainpageHoney';
 import MainPageFood from './pages/MainpageFood';
 import MainPageMap from './pages/MainpageMap';
-import './assets/fonts/fonts.css'
+import MyPage from './pages/Mypage';
+import './assets/fonts/fonts.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import './App.css';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/mainpagehoney" element={<MainPageHoney />} />
         <Route path="/mainpagefood" element={<MainPageFood />} />
         <Route path="/mainpagemap" element={<MainPageMap />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </Router>
   );
