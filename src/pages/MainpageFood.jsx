@@ -7,7 +7,7 @@ import food4 from "../assets/food4.png";
 import food5 from "../assets/food5.png";
 import styled,{keyframes} from "styled-components";
 const MainPageFood = () => {
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     
     const Wrap = styled.div`
         width: 100%;
@@ -40,7 +40,7 @@ const MainPageFood = () => {
         overflow: hidden;
         position: relative;
     `
-    const Index_list = styled.ul`
+    const IndexList = styled.ul`
         margin-top: 1.5rem;
         display: flex;
         margin: 0;
@@ -52,20 +52,24 @@ const MainPageFood = () => {
     `
     const Index = styled.div`
         width: 5rem;
-        height: 7rem;
-        background-color: #fafcff;
+        height: ${({ active }) => (active ? '10rem' : '7rem')};
+        background-color: ${({ active }) => (active ? '#9DBDED' : '#fafcff')};
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
         overflow: hidden;
+        transition: background-color 0.3s ease, max-height 0.3s ease;
     
         &:hover {
         cursor: pointer;
-        height: 10rem;
         background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
         }
     `;
+
+  
+  
+  
+  
   
     const Page1 = styled.div`
         display: flex;
@@ -160,7 +164,7 @@ const MainPageFood = () => {
     return(
         <Wrap>
             <Logo src={logo} alt="logo" />
-            <Index_list>
+            <IndexList>
             {[0, 1, 2, 3].map((i) => (
                 <Index
                     key={i}
@@ -169,7 +173,7 @@ const MainPageFood = () => {
                 >
                 </Index>
             ))}
-            </Index_list>
+            </IndexList>
             <Bg>
                 <Page1> 
                     <Intro>회대 맛집 Top5</Intro>
