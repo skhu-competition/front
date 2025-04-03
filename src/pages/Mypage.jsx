@@ -1,6 +1,10 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import styled from "styled-components";
+import food_tap_icon from "../assets/food-tap-icon.png";
+import honey_tap_icon from "../assets/honey-tap-icon.png";
+import map_tap_icon from "../assets/map-tap-icon.png";
+import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Mypage = () => {
@@ -9,6 +13,7 @@ const Mypage = () => {
     const location = useLocation();
 
     const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
+    const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
 
     const Wrap = styled.div`
         width: 100%;
@@ -62,11 +67,27 @@ const Mypage = () => {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
     
         &:hover {
         cursor: pointer;
-        background-color: #dceaff;
+        height: 10rem;
+      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+
+        img {
+            opacity: 0;
         }
+        }
+    `;
+
+    const IndexImage = styled.img`
+        text-align: center;
+        margin: auto 0;
+        width: 70px;
+        height: 70px;
+
+        display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
     `;
 
     const Page1 = styled.div`
@@ -126,6 +147,7 @@ const Mypage = () => {
                         navigate(routes[i]);
                     }}
                 >
+                <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
                 </Index>
             ))}
             </IndexList>
