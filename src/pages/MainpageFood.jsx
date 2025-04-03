@@ -67,6 +67,7 @@ const MainPageFood = () => {
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
         overflow: hidden;
         display: flex;
         justify-content: center;
@@ -78,7 +79,6 @@ const MainPageFood = () => {
 
             img {
                 opacity: 0;
-                transition: opacity 0.3s ease;
             }
         }
     `;
@@ -88,7 +88,6 @@ const MainPageFood = () => {
         margin: auto 0;
         width: 70px;
         height: 70px;
-        transition: opacity 0.3s ease;
 
         display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
     `

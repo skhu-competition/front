@@ -85,7 +85,6 @@ const MainPageMap = () => {
 
       img {
         opacity: 0;
-        transition: opacity 0.3s ease;
       }
     }
   `;
@@ -95,7 +94,6 @@ const MainPageMap = () => {
     margin: auto 0;
     width: 70px;
     height: 70px;
-    transition: opacity 0.3s ease;
 
     display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
   `
