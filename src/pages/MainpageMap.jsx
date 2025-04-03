@@ -21,7 +21,7 @@ const MainPageMap = () => {
   // 지도 중심 좌표를 컴포넌트 밖에서 선언
   const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
 
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/'];
+  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
 
   const Wrap = styled.div`
     width: 100%;
@@ -80,7 +80,8 @@ const MainPageMap = () => {
 
     &:hover {
       cursor: pointer;
-      background-color: #dceaff;
+      height: 10rem;
+      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
 
       img {
         opacity: 0;
