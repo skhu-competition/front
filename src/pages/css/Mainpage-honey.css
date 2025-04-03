@@ -1,4 +1,4 @@
-.wrap {
+/* .wrap {
     width: 100%;
     height: 100vh;
     background-color: #E0ECFD;
@@ -41,7 +41,7 @@
 
     left: calc((100% - 85vw) / 2 - 6rem);
     /*  흰 박스 기준 왼쪽으로 붙이기 */
-}
+/*}
 
 .index_list>li {
     width: 5rem;
@@ -76,7 +76,7 @@
     font-family: "Toss", sans-serif;
     font-weight: bold;
     margin-left: 0 !important; /* Mainpage-map.css */
-  }
+  /*}
   
 
 .category1 {
@@ -124,4 +124,4 @@
 
 .folder-img:hover {
     transform: scale(1.05);
-}
+} */
