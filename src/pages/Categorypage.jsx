@@ -3,7 +3,12 @@ import { useState } from "react";
 import paperIcon from "../assets/paper-icon.png";
 import noPostIcon from "../assets/empty.png";
 import logo from "../assets/logo.png";
+import food_tap_icon from "../assets/food-tap-icon.png";
+import honey_tap_icon from "../assets/honey-tap-icon.png";
+import map_tap_icon from "../assets/map-tap-icon.png";
+import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import "./css/Categorypage.css";
+import styled from "styled-components";
 
 const CategoryPage = ({ posts }) => {
   const { name } = useParams();
@@ -11,6 +16,10 @@ const CategoryPage = ({ posts }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
+  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+
 
   const filteredPosts = posts.filter((post) => post.category === name);
 
@@ -33,19 +42,108 @@ const CategoryPage = ({ posts }) => {
   const currentDate = new Date().toISOString().split("T")[0];
   const currentUser = "전뚠뚠 누나"; // 실제 유저 정보 받으면 props나 context로 수정하겠습니당
 
+  const Wrap = styled.div`
+    width: 100%;
+    height: 100vh;
+    background-color: #E0ECFD;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  `
+  
+  const Logo = styled.img`
+    position: absolute;
+    width: 13rem; 
+    top: 3rem;
+    left: 1rem;
+    cursor: pointer;
+    z-index: 2;
+  `
+
+  const Bg = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: calc(100% - 15rem);
+    height: 85vh;
+    border-top-left-radius: 3rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+  `
+
+  const IndexList = styled.ul`
+    margin-top: 1.5rem;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-self: center;
+    flex-direction: column;
+    gap: 2rem;
+  `
+
+  const Index = styled.div`
+    width: 5rem;
+    height: ${({ active }) => (active ? '10rem' : '7rem')};
+    background-color: ${({ active }) => (active ? '#9DBDED' : '#FAFCFF')};
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      cursor: pointer;
+      height: 10rem;
+      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+
+      img {
+        opacity: 0;
+      }
+    }
+  `;
+
+  const IndexImage = styled.img`
+    text-align: center;
+    margin: auto 0;
+    width: 70px;
+    height: 70px;
+
+    display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
+  `
+
+  const Intro = styled.p`
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 30px;
+  `
+
   return (
-    <div className="wrap">
-      <img src={logo} alt="logo" className="title" />
-      <ul className="index_list">
-        <li></li>
-        <li className="active"></li>
-        <li></li>
-        <li></li>
-      </ul>
+    <Wrap>
+      <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
+      <IndexList>
+            {[0, 1, 2, 3].map((i) => (
+                <Index
+                    key={i}
+                    active={selectedIndex === i}
+                    onClick={() => {
+                        setSelectedIndex(i);
+                        navigate(routes[i]);
+                    }}
+                >
+                <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
+                </Index>
+            ))}
+        </IndexList>
 
       <div className="category-bg">
         <div className="category-header">
-          <h2 className="category-title">{name} 게시판 ▷</h2>
+          <Intro>{name} 게시판 ▷</Intro>
           <button className="write-btn" onClick={() => setIsModalOpen(true)}>
             🖋 글쓰기
           </button>
@@ -112,7 +210,7 @@ const CategoryPage = ({ posts }) => {
           </div>
         </div>
       )}
-    </div>
+    </Wrap>
   );
 };
 
