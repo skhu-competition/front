@@ -1,6 +1,9 @@
 import React from 'react';
 import Login from './pages/Login';
 import MainPageHoney from './pages/MainpageHoney';
+import CategoryPage from "./pages/Categorypage";
+import { useState } from "react";
+import PostDetailPage from './pages/PostDetailPage';
 import MainPageFood from './pages/MainpageFood';
 import MainPageMap from './pages/MainpageMap';
 import './assets/fonts/fonts.css'
@@ -9,16 +12,20 @@ import { useMediaQuery } from 'react-responsive';
 import './App.css';
 
 function App() {
+
+  const [postMessage, setPosts] = useState([]);
+
   const isMobile = useMediaQuery({ query: '(max-width: 1000px' });
-  if(isMobile) {
+  if (isMobile) {
     return (
       <div className='mobile-display'>
-        <div style={{flexDirection:"row", gap:"0", justifyContent:"center", alignItems:"center"}}>
-            데스크톱만 가능합니다.
+        <div style={{ flexDirection: "row", gap: "0", justifyContent: "center", alignItems: "center" }}>
+          데스크톱만 가능합니다.
         </div>
       </div>
     )
   }
+
 
   return (
     <Router>
@@ -27,6 +34,8 @@ function App() {
         <Route path="/mainpagehoney" element={<MainPageHoney />} />
         <Route path="/mainpagefood" element={<MainPageFood />} />
         <Route path="/mainpagemap" element={<MainPageMap />} />
+        <Route path="/category/:name" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
+        <Route path="/post/:id" element={<PostDetailPage />} /> {/* 글 상세페이지 */}
       </Routes>
     </Router>
   );

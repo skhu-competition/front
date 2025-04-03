@@ -1,0 +1,284 @@
+.wrap {
+  width: 100%;
+  height: 100vh;
+  background-color: #E0ECFD;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.title {
+  position: absolute;
+  width: 13rem;
+  top: 3rem;
+  left: 1rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.index_list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-self: center;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.index_list > li {
+  width: 5rem;
+  height: 7rem;
+  background-color: #fafcff;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  margin-left: 50%;
+}
+
+.index_list > li:hover {
+  height: 10rem;
+  background-color: #dceaff;
+}
+
+.index_list li.active {
+  background-color: #7DA2D8;
+  height: 15rem;
+  width: 10rem;
+}
+
+.category-bg {
+  background-color: white;
+  width: calc(100% - 15rem);
+  height: 85vh;
+  border-top-left-radius: 3rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem 3rem;
+  box-sizing: border-box;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.category-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.write-btn {
+  font-size: 16px;
+  background-color: #eee;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 3rem;
+}
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.post-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-title {
+  font-weight: 500;
+  color: #333;
+}
+
+.post-right {
+  text-align: right;
+  font-size: 14px;
+  color: #666;
+  max-width: 50%;
+}
+
+.post-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-date {
+  display: block;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.empty {
+  color: #777;
+  font-size: 16px;
+  margin-top: 2rem;
+}
+
+.empty-box {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.empty-img {
+  width: 18rem;
+  opacity: 0.8;
+  margin-top: 5rem;
+}
+
+.empty-text {
+  margin-top: 2rem;
+  font-size: 18px;
+  color: #666;
+}
+
+/* ✅ 모달 전체 배경 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ✅ 모달 안 박스 */
+.modal-content {
+  background-color: white;
+  width: 80rem;
+  max-width: 80%;
+  height: 40rem;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  position: relative;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 이미지와 글자 사이 여백 */
+  margin: 1rem 0;
+}
+
+.modal-icon-inline {
+  width: 35px;
+  height: auto;
+}
+
+
+.modal-title-input {
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  outline: none;
+  margin-left: 0;
+  background: none;
+  width: 100%;
+  color: hwb(#777);
+  margin-top: 1rem;
+}
+
+.modal-title-input::placeholder {
+  color: #888;
+  font-weight: normal;
+}
+
+
+/* ✅ 내용 textarea 높이 늘리기 + 간격 추가 */
+.modal-textarea {
+  width: 100%;
+  height: 250px; /* ⬅️ 기존보다 더 길게 */
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  resize: none;
+  margin-top: 2rem; /* ⬅️ 날짜 아래 간격 */
+  margin-bottom: 2.5rem; /* ⬅️ 버튼 간격도 넉넉하게 */
+  background-color: #f9f9f9;
+}
+
+/* ✅ 등록하기 버튼 더 아래로 */
+.submit-btn {
+  background-color: #7da2d8;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+}
+
+
+/* 아이콘 + 제목 + 작성자 영역 (가로 정렬) */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 종이 아이콘 */
+.modal-icon-small {
+  width: 60px;
+  height: auto;
+}
+
+/* 제목과 아이디/날짜 묶음 */
+.modal-header-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 연한 제목 텍스트 */
+.modal-title-text {
+  font-size: 25px;
+  color: #333;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* 아이디 + 날짜 텍스트 */
+.modal-subinfo {
+  font-size: 14px;
+  color: #888;
+  margin-top: 0.4rem;
+  line-height: 1.4;
+}
