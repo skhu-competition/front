@@ -120,7 +120,7 @@ const MainPageMap = () => {
   const Map = styled.div`
     border-radius: 2rem;
     margin-top: 20px;
-    width: 100%;
+    width: 60%;
     height: 600px;
   `;
 
@@ -168,7 +168,10 @@ const MainPageMap = () => {
             <div class="map-info-window">
                 <div class="info-header">
                     <span class="place-name">${name}</span>
-                    <button class="close-btn">✕</button>
+                    <div class="info-actions">
+                      <button class="post-review">리뷰 작성하기</button>
+                      <button class="close-btn">✕</button>
+                    </div>
                 </div>
                 <div class="info-rating">
                     <span class="stars">★☆☆☆☆</span>
