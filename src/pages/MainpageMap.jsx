@@ -92,8 +92,8 @@ const MainPageMap = () => {
   const IndexImage = styled.img`
     text-align: center;
     margin: auto 0;
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
 
     display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
   `
