@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/logo.png";
 import styled from "styled-components";
 import food_tap_icon from "../assets/food-tap-icon.png";
@@ -13,8 +13,31 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Mypage = () => {
     const [selectedIndex, setSelectedIndex] = useState(3);
     const [subTabIndex, setSubTabIndex] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const itemsPerPage = 4;
+    const writtenItems = Array.from({ length: 10 });
+    const savedItems = Array.from({ length: 10 });
+    const currentItems = subTabIndex === 0 ? writtenItems : savedItems;
+
+    const startIdx = currentPage * itemsPerPage;
+    const paginatedItems = currentItems.slice(startIdx, startIdx + itemsPerPage);
+    const totalPages = Math.ceil(currentItems.length / itemsPerPage);
+
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        setCurrentPage(0); 
+    }, [subTabIndex]);
+
+    const goToPreviousPage = () => {
+        setCurrentPage((prev) => Math.max(prev - 1, 0));
+    };
+
+    const goToNextPage = () => {
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+    };
 
     const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
     const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
@@ -178,8 +201,8 @@ const Mypage = () => {
         width: 80%; 
         border-top: 1px solid #ececec;
         display: flex;
-        justify-content: space-between; 
         align-items: center;
+        justify-content: space-around;
         gap: 1rem; 
         padding-top: 1rem;
     `;
@@ -290,23 +313,40 @@ const Mypage = () => {
     `;
 
 
+    const PaginationButtons = styled.div`
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+    `;
+
+    const PaginationBtn = styled.button`
+        background-color: #9DBDED;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
+        pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    `;
 
     return (
         <Wrap>
             <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
             <IndexList>
-            {[0, 1, 2, 3].map((i) => (
-                <Index
-                    key={i}
-                    active={selectedIndex === i}
-                    onClick={() => {
-                        setSelectedIndex(i);
-                        navigate(routes[i]);
-                    }}
-                >
-                <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
-                </Index>
-            ))}
+                {[0, 1, 2, 3].map((i) => (
+                    <Index
+                        key={i}
+                        active={selectedIndex === i}
+                        onClick={() => {
+                            setSelectedIndex(i);
+                            navigate(routes[i]);
+                        }}
+                    >
+                        <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
+                    </Index>
+                ))}
             </IndexList>
             <Bg>
                 <Page1>
@@ -317,93 +357,50 @@ const Mypage = () => {
                             <Logout src={logout_icon} alt="logout" />
                             <L1BottomUL>
                                 <BottonLi onClick={() => setSubTabIndex(0)}>
-                                    <BottonIcon src={pen_icon} alt="pen"/>
+                                    <BottonIcon src={pen_icon} alt="pen" />
                                     <BottomTitle>작성한 글</BottomTitle>
                                     <BottomP>작성한 게시물 보기</BottomP>
                                 </BottonLi>
                                 <BottonLi onClick={() => setSubTabIndex(1)}>
-                                    <BottonIcon src={star_icon} alt="pen"/>
+                                    <BottonIcon src={star_icon} alt="star" />
                                     <BottomTitle>저장한 글</BottomTitle>
                                     <BottomP>스크랩한 글 목록</BottomP>
                                 </BottonLi>
-                                <BottonLi onClick={() => setSubTabIndex(2)}>
-                                    <BottonIcon src={pen_icon} alt="pen"/>
-                                    <BottomTitle>저장한 글</BottomTitle>
-                                    <BottomP>어쩌구저쩌구</BottomP>
-                                </BottonLi>
-                                
                             </L1BottomUL>
                         </Li1>
                         <Li2>
-                        {subTabIndex === 0 && (
-                            <L2Ul key="written">
-                            {Array.from({ length: 10 }).map((_, idx) => (
-                                <L2Li>
-                                    <ContentRow>
-                                        <IconWrap>
-                                            <Icon src={pen_icon} alt="pen" />
-                                        </IconWrap>
-                                        <ContentText>
-                                            <Title>내가 작성한 글 {idx + 1}</Title>
-                                            <DateText>2024.04.04</DateText>
-                                            <Description>
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet, deserunt deleniti praesentium amet harum eligendi consequatur magnam dolor accusantium, quam asperiores rerum! Cum consequuntur dolores perferendis, totam nulla iure repudiandae?
-                                            </Description>
-                                        </ContentText>
-                                    </ContentRow>
-                                </L2Li>
-                            ))}
+                            <L2Ul key={subTabIndex === 0 ? "written" : "saved"}>
+                                {paginatedItems.map((_, idx) => (
+                                    <L2Li key={idx}>
+                                        <ContentRow>
+                                            <IconWrap>
+                                                <Icon src={subTabIndex === 0 ? pen_icon : star_icon} alt="icon" />
+                                            </IconWrap>
+                                            <ContentText>
+                                                <Title>
+                                                    {subTabIndex === 0
+                                                        ? `내가 작성한 글 ${startIdx + idx + 1}`
+                                                        : `내가 스크랩한 글 ${startIdx + idx + 1}`}
+                                                </Title>
+                                                <DateText>2024.04.04</DateText>
+                                                <Description>
+                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
+                                                </Description>
+                                            </ContentText>
+                                        </ContentRow>
+                                    </L2Li>
+                                ))}
                             </L2Ul>
-                        )}
-
-                        {subTabIndex === 1 && (
-                            <L2Ul key="saved">
-                            {Array.from({ length: 10 }).map((_, idx) => (
-                                <L2Li>
-                                    <ContentRow>
-                                        <IconWrap>
-                                            <Icon src={star_icon} alt="star" />
-                                        </IconWrap>
-                                        <ContentText>
-                                            <Title>내가 스크랩한 글 {idx + 1}</Title>
-                                            <DateText>2024.04.04</DateText>
-                                            <Description>
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet, deserunt deleniti praesentium amet harum eligendi consequatur magnam dolor accusantium, quam asperiores rerum! Cum consequuntur dolores perferendis, totam nulla iure repudiandae?
-                                            </Description>
-                                        </ContentText>
-                                    </ContentRow>
-                                </L2Li>
-                            ))}
-                            </L2Ul>
-                        )}
-
-                        {subTabIndex === 2 && (
-                            <L2Ul key="saved">
-                            {Array.from({ length: 10 }).map((_, idx) => (
-                                <L2Li>
-                                    <ContentRow>
-                                        <IconWrap>
-                                            <Icon src={pen_icon} alt="pen" />
-                                        </IconWrap>
-                                        <ContentText>
-                                            <Title>내가 작성한 글 {idx + 1}</Title>
-                                            <DateText>2024.04.04</DateText>
-                                            <Description>
-                                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet, deserunt deleniti praesentium amet harum eligendi consequatur magnam dolor accusantium, quam asperiores rerum! Cum consequuntur dolores perferendis, totam nulla iure repudiandae?
-                                            </Description>
-                                        </ContentText>
-                                    </ContentRow>
-                                </L2Li>
-                            ))}
-                            </L2Ul>
-                        )}
-                
+                            <PaginationButtons>
+                                <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
+                                <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
+                            </PaginationButtons>
                         </Li2>
                     </MyUl>
                 </Page1>
             </Bg>
         </Wrap>
-    )
-}
+    );
+};
 
 export default Mypage;
