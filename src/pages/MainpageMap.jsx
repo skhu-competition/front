@@ -12,11 +12,18 @@ const { naver } = window;
 
 const MainPageMap = () => {
   const [selectedIndex, setSelectedIndex] = useState(2);
+  const [currentPage, setCurrentPage] = useState(0);
   const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
   const container = useRef(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const itemsPerPage = 5;
+  const writtenItems = Array.from({ length: 10 });
+  const startIdx = currentPage * itemsPerPage;
+  const paginatedItems = writtenItems.slice(startIdx, startIdx + itemsPerPage);
+  const totalPages = Math.ceil(writtenItems.length / itemsPerPage);
 
   // 지도 중심 좌표를 컴포넌트 밖에서 선언
   const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
@@ -99,15 +106,20 @@ const MainPageMap = () => {
   `
 
   const Page1 = styled.div`
-    display: flex;
-    flex-direction: column; 
-    justify-content: flex-start;
-    align-items: flex-start;
+    flex: 1;
     width: 100%;
     height: 100%;
-    padding: 2rem 5rem;
+    padding: 2rem 0 5rem 5rem;
     box-sizing: border-box;
   `;
+
+  const Page2 = styled.div`
+    flex: 0.7;
+    height: 100%;
+    max-height: 100%;
+    margin-right: 2rem;
+    margin-left: 5rem;
+  `
 
   const Intro = styled.p`
     width: 100%;
@@ -120,9 +132,87 @@ const MainPageMap = () => {
   const Map = styled.div`
     border-radius: 2rem;
     margin-top: 20px;
-    width: 60%;
+    width: 100%;
     height: 600px;
   `;
+
+  const ReviewList = styled.div`
+    width: 100%;
+    margin-top: 7.5rem;
+    height: 70%;
+    overflow-y: auto;
+    max-height: 100%;
+    overflow-x: hidden; 
+    border-radius: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  `
+
+  const ContentRow = styled.div`
+    margin-left: 3rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden; 
+  `;
+
+  const ContentText = styled.div`
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        overflow: hidden;
+    `;
+    const Title = styled.p`
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin: 0;
+    `;
+
+    const DateText = styled.span`
+        font-size: 0.8rem;
+        color: #999;
+    `;
+
+    const Description = styled.p`
+        font-size: 0.9rem;
+        color: #444;
+        margin: 0.25rem 0 0;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        width: 80%; 
+        display: block;
+    `;
+
+    const Author = styled.p`
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-top: 30px;
+      margin-bottom: 0;
+    `
+
+    const PaginationButtons = styled.div`
+        display: flex;
+        justify-content: space-evenly;
+        padding: 1rem 2rem;
+    `;
+
+    const PaginationBtn = styled.button`
+        background-color: #9DBDED;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
+        pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    `;
 
   useEffect(() => {
     if (!container.current || !naver || !naver.maps) return;
@@ -232,6 +322,14 @@ const MainPageMap = () => {
     }
   };
 
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+  };
+
   return (
     <Wrap>
       <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
@@ -261,6 +359,25 @@ const MainPageMap = () => {
           <Intro>회대 지도</Intro>
           <Map ref={container} />
         </Page1>
+        <Page2>
+          <ReviewList>
+          {paginatedItems.map((_, idx) =>
+            <ContentRow>
+              <ContentText>
+                <Author>작성자{startIdx+idx+1}</Author>
+                <DateText>2024.04.04</DateText>
+                <Description>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
+                </Description>
+              </ContentText>
+            </ContentRow>
+            )}
+        </ReviewList>
+          <PaginationButtons>
+              <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
+              <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
+          </PaginationButtons>
+        </Page2>
       </Bg>
     </Wrap>
   );
