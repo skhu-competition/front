@@ -249,8 +249,7 @@ const Mypage = () => {
     `;
 
     const IconWrap = styled.div`
-        width: 50px;
-        height: 50px;
+        width: 3rem;
         flex-shrink: 0;
     `;
 
