@@ -178,7 +178,7 @@ const Mypage = () => {
         width: 80%; 
         border-top: 1px solid #ececec;
         display: flex;
-        justify-content: center; 
+        justify-content: space-between; 
         align-items: center;
         gap: 1rem; 
         padding-top: 1rem;
