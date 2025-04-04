@@ -182,6 +182,7 @@ const MainPageMap = () => {
                     ${description}
                 </div>
             </div>
+            <div class="info-tail-shadow"></div>
             <div class="info-tail"></div>
         </div>
       `;

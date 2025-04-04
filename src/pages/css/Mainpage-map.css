@@ -2,7 +2,7 @@
 .map-info-window {
     width: 340px;
     background: white;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     font-family: sans-serif;
@@ -52,21 +52,35 @@
     font-weight: bold;
 }
 
+/* ✅ 그림자용 꼬리 (좀 더 아래로 내려서 선 없앰) */
+.info-tail-shadow {
+    position: absolute;
+    top: calc(100% + 6px);
+    /* ⬅️ 기존 1px → 3px로 내려서 경계 피함 */
+    left: 45%;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid rgba(0, 0, 0, 0.12);
+    filter: blur(2.5px);
+    /* ⬅️ 더 부드럽게 */
+    z-index: 0;
+    /* ⬅️ 본 꼬리보다 아래 */
+}
+
+/* ✅ 실제 하얀색 꼬리 */
 .info-tail {
     position: absolute;
     top: 100%;
-    /* 아래에 붙이기 */
-    left:45%;
-    /* 원하는 위치 조절 */
+    left: 45%;
     width: 0;
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 20px solid white;
-    /* 꼬리 색상 (박스 배경과 같게) */
-
-    /* 꼬리 외곽선 효과 주고 싶다면 아래처럼 추가 */
-    filter: drop-shadow(0px -1px 1px rgba(0, 0, 0, 0.1));
+    z-index: 2;
+    /* ⬅️ 본체보다 위 */
 }
 
 .info-extra {
