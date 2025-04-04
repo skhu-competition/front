@@ -175,17 +175,16 @@ const Mypage = () => {
         list-style: none;
         margin: 0;
         padding: 0;
-        width: 80%;
+        width: 80%; 
         border-top: 1px solid #ececec;
         display: flex;
-        justify-content: center;
+        justify-content: center; 
+        align-items: center;
         gap: 1rem; 
         padding-top: 1rem;
-        padding-right: 1rem;
-    `
+    `;
 
     const BottonLi = styled.li`
-        flex: 1; 
         min-width: 100px;
         max-width: 150px;
         cursor: pointer;
