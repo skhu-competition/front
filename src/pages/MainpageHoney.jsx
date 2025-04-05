@@ -12,8 +12,8 @@ import styled from "styled-components";
 const MainPageHoney = () => {
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(1);
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
-  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
   const goToCategory = (category) => {
     navigate(`/category/${category}`);

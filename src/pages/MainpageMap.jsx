@@ -11,9 +11,12 @@ import styled from "styled-components";
 const { naver } = window;
 
 const MainPageMap = () => {
-  const [selectedIndex, setSelectedIndex] = useState(2);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
+
   const [currentPage, setCurrentPage] = useState(0);
-  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+  
   const container = useRef(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
@@ -27,8 +30,6 @@ const MainPageMap = () => {
 
   // 지도 중심 좌표를 컴포넌트 밖에서 선언
   const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
-
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
 
   const Wrap = styled.div`
     width: 100%;
@@ -139,7 +140,7 @@ const MainPageMap = () => {
   const ReviewList = styled.div`
     width: 100%;
     margin-top: 7.5rem;
-    height: 70%;
+    height: 72%;
     overflow-y: auto;
     max-height: 100%;
     overflow-x: hidden; 
@@ -341,7 +342,7 @@ const MainPageMap = () => {
             onClick={() => {
               // 이미 해당 경로에 있다면 (특히 Index 2) refreshMap 호출
               if (routes[i] === location.pathname) {
-                if (i === 2) {
+                if (i === 0) {
                   refreshMap();
                 }
               } else {

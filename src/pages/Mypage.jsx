@@ -8,12 +8,12 @@ import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Mypage = () => {
-    const [selectedIndex, setSelectedIndex] = useState(3);
     const navigate = useNavigate();
     const location = useLocation();
 
-    const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
-    const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+    const [selectedIndex, setSelectedIndex] = useState(3);
+    const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+    const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
     const Wrap = styled.div`
         width: 100%;

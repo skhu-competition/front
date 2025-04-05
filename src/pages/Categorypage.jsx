@@ -17,8 +17,8 @@ const CategoryPage = ({ posts }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
-  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
 
   const filteredPosts = posts.filter((post) => post.category === name);
