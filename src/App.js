@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import { useMediaQuery } from 'react-responsive';
 import './App.css';
 import KakaoLoginHandler from './pages/KakaoLoginHandler';
+import GoogleLoginHandler from './pages/GoogleLoginHandler';
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
         <Route path="/category/:name" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
         <Route path="/post/:id" element={<PostDetailPage />} /> {/* 글 상세페이지 */}
         <Route path="/oauth/kakao" element={<KakaoLoginHandler />} />
+        <Route path="/oauth/google" element={<GoogleLoginHandler />} />
       </Routes>
   );
 }

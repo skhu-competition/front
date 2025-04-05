@@ -57,7 +57,8 @@ const Login = () => {
     window.location.href = kakaoLoginUrl;
   };
   const googleLoginClick = () => {
-    const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=https://nowskhu.zapto.org/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email`;
+    // const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/auth/google/login&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email`;
+    const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=http://localhost:3000/oauth/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email`;
     window.location.href = googleLoginUrl;
   };
 
