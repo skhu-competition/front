@@ -4,6 +4,7 @@ import food_tap_icon from "../assets/food-tap-icon.png";
 import honey_tap_icon from "../assets/honey-tap-icon.png";
 import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
+import star_img from "../assets/star-img.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -24,6 +25,7 @@ const MainPageMap = () => {
 
   const itemsPerPage = 5;
   const writtenItems = Array.from({ length: 10 });
+  const rates = {}
   const startIdx = currentPage * itemsPerPage;
   const paginatedItems = writtenItems.slice(startIdx, startIdx + itemsPerPage);
   const totalPages = Math.ceil(writtenItems.length / itemsPerPage);
@@ -139,7 +141,7 @@ const MainPageMap = () => {
 
   const ReviewList = styled.div`
     width: 100%;
-    margin-top: 7.5rem;
+    margin-top: 8rem;
     height: 72%;
     overflow-y: auto;
     max-height: 100%;
@@ -150,7 +152,6 @@ const MainPageMap = () => {
 
   const ContentRow = styled.div`
     margin-left: 3rem;
-    margin-top: 0.5rem;
     display: flex;
     align-items: flex-start;
     gap: 1rem;
@@ -172,15 +173,15 @@ const MainPageMap = () => {
         margin: 0;
     `;
 
-    const DateText = styled.span`
-        font-size: 0.8rem;
-        color: #999;
+    const Star = styled.img`
+      width: 1.3rem;
+      margin-bottom: -0.1rem;
     `;
 
     const Description = styled.p`
         font-size: 0.9rem;
         color: #444;
-        margin: 0.25rem 0 0;
+        margin: 0;
 
         white-space: nowrap;
         overflow: hidden;
@@ -195,6 +196,12 @@ const MainPageMap = () => {
       font-weight: bold;
       margin-top: 30px;
       margin-bottom: 0;
+    `
+
+    const StarWrapper = styled.div`
+      display: flex;
+      align-items: center;
+      gap: 2px;
     `
 
     const PaginationButtons = styled.div`
@@ -266,7 +273,6 @@ const MainPageMap = () => {
                 </div>
                 <div class="info-rating">
                     <span class="stars">★☆☆☆☆</span>
-                    <span class="review">(0건) 리뷰 0</span>
                 </div>
                 <div class="info-address">
                     ${address}<br />
@@ -366,7 +372,15 @@ const MainPageMap = () => {
             <ContentRow>
               <ContentText>
                 <Author>작성자{startIdx+idx+1}</Author>
-                <DateText>2024.04.04</DateText>
+                  <StarWrapper>
+                  {Array(itemsPerPage).fill(0).map((_, starIdx) => (
+                    <Star
+                      key={starIdx}
+                      src={star_img} 
+                      alt="star"
+                    />
+                  ))}
+                  </StarWrapper>
                 <Description>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
                 </Description>
