@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Login from './pages/Login';
 import MainPageHoney from './pages/MainpageHoney';
 import CategoryPage from "./pages/Categorypage";
@@ -8,13 +8,23 @@ import MainPageFood from './pages/MainpageFood';
 import MainPageMap from './pages/MainpageMap';
 import MyPage from './pages/Mypage';
 import './assets/fonts/fonts.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import './App.css';
+import KakaoLoginHandler from './pages/KakaoLoginHandler';
 
 function App() {
 
+  const navigate = useNavigate();
   const [postMessage, setPosts] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      navigate("/mainpagemap", { replace: true });
+    }
+  }, [navigate])
 
   const isMobile = useMediaQuery({ query: '(max-width: 1000px' });
   if (isMobile) {
@@ -27,9 +37,7 @@ function App() {
     )
   }
 
-
   return (
-    <Router>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/mainpagehoney" element={<MainPageHoney />} />
@@ -38,8 +46,8 @@ function App() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/category/:name" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
         <Route path="/post/:id" element={<PostDetailPage />} /> {/* 글 상세페이지 */}
+        <Route path="/oauth/kakao" element={<KakaoLoginHandler />} />
       </Routes>
-    </Router>
   );
 }
 
