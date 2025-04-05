@@ -7,7 +7,7 @@ import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import logout_icon from "../assets/logout-icon.png";
 import pen_icon from "../assets/pen-icon2.png";
-import star_icon from "../assets/star-img3.png"
+import bookmark_icon from "../assets/bookmark-icon.png"
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Mypage = () => {
@@ -316,7 +316,7 @@ const Mypage = () => {
     const PaginationButtons = styled.div`
         display: flex;
         justify-content: space-between;
-        padding: 1rem 2rem;
+        padding: 3rem 2rem;
     `;
 
     const PaginationBtn = styled.button`
@@ -330,7 +330,12 @@ const Mypage = () => {
         opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
         pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     `;
-
+    const PageIndicator = styled.span`
+        font-size: 1rem;
+        font-weight: bold;
+        color: #555;
+        align-self: center;
+    `;
     return (
         <Wrap>
             <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
@@ -362,9 +367,9 @@ const Mypage = () => {
                                     <BottomP>작성한 게시물 보기</BottomP>
                                 </BottonLi>
                                 <BottonLi onClick={() => setSubTabIndex(1)}>
-                                    <BottonIcon src={star_icon} alt="star" />
+                                    <BottonIcon src={bookmark_icon} alt="star" />
                                     <BottomTitle>저장한 글</BottomTitle>
-                                    <BottomP>스크랩한 글 목록</BottomP>
+                                    <BottomP>스크랩한 글 보기</BottomP>
                                 </BottonLi>
                             </L1BottomUL>
                         </Li1>
@@ -374,7 +379,7 @@ const Mypage = () => {
                                     <L2Li key={idx}>
                                         <ContentRow>
                                             <IconWrap>
-                                                <Icon src={subTabIndex === 0 ? pen_icon : star_icon} alt="icon" />
+                                                <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
                                             </IconWrap>
                                             <ContentText>
                                                 <Title>
@@ -393,6 +398,7 @@ const Mypage = () => {
                             </L2Ul>
                             <PaginationButtons>
                                 <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
+                                <PageIndicator>{currentPage + 1} / {totalPages}</PageIndicator>
                                 <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
                             </PaginationButtons>
                         </Li2>
