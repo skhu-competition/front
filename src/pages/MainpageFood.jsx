@@ -12,25 +12,26 @@ import food2 from "../assets/food2.png";
 import food3 from "../assets/food3.png";
 import food4 from "../assets/food4.png";
 import food5 from "../assets/food5.png";
-import styled,{keyframes} from "styled-components";
-import { useNavigate } from "react-router-dom";
 
-const MainPageFood = () => {
-    const navitage = useNavigate();
+const foodData = [
+  { img: food1, name: "이천성모메존칼국수", rank: 1 },
+  { img: food2, name: "다원국수", rank: 2 },
+  { img: food3, name: "우가본", rank: 3 },
+  { img: food4, name: "본가 칡냉면", rank: 4 },
+  { img: food5, name: "수목원국수", rank: 5 },
+];
 
-    const [selectedIndex, setSelectedIndex] = useState(2);
-    const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
-    const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
-    
-    const Wrap = styled.div`
-        width: 100%;
-        height: 100vh;
-        background-color: #E0ECFD;
-        position: relative;
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-end;
-    `
+
+
+const Wrap = styled.div`
+  width: 100%;
+  height: 100vh;
+  background-color: #e0ecfd;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+`;
 
 const Logo = styled.img`
   position: absolute;
@@ -75,25 +76,34 @@ const Index = styled.div`
   }
 `;
 
-    const IndexImage = styled.img`
-        text-align: center;
-        margin: auto 0;
-        width: 50px;
-        height: 50px;
+const IndexImage = styled.img`
+  width: 70px;
+  height: 70px;
+  margin: auto 0;
+  display: ${({ isSelected }) => (isSelected ? "none" : "block")};
+`;
 
-        display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
-    `
-  
-    const Page1 = styled.div`
-        display: flex;
-        flex-direction: column; 
-        justify-content: flex-start;
-        align-items: flex-start;
-        width: 100%;
-        height: 100%;
-        padding: 2rem 5rem;
-        box-sizing: border-box;
-    `
+const Bg = styled.div`
+  width: calc(100% - 15rem);
+  height: 85vh;
+  background-color: white;
+  border-top-left-radius: 3rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Page1 = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 2rem 5rem;
+  box-sizing: border-box;
+`;
 
 const Intro = styled.p`
   font-size: 30px;
