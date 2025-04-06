@@ -16,8 +16,8 @@ const Mypage = () => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const itemsPerPage = 4;
-    const writtenItems = Array.from({ length: 10 });
-    const savedItems = Array.from({ length: 10 });
+    const writtenItems = Array.from({ length: 0 });
+    const savedItems = Array.from({ length: 0 });
     const currentItems = subTabIndex === 0 ? writtenItems : savedItems;
 
     const startIdx = currentPage * itemsPerPage;
@@ -374,34 +374,48 @@ const Mypage = () => {
                             </L1BottomUL>
                         </Li1>
                         <Li2>
+                        {currentItems.length === 0 ? (
+                            <p style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
+                            {subTabIndex === 0 ? "작성한 글이 없습니다." : "저장한 글이 없습니다."}
+                            </p>
+                        ) : (
+                            <>
                             <L2Ul key={subTabIndex === 0 ? "written" : "saved"}>
                                 {paginatedItems.map((_, idx) => (
-                                    <L2Li key={idx}>
-                                        <ContentRow>
-                                            <IconWrap>
-                                                <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
-                                            </IconWrap>
-                                            <ContentText>
-                                                <Title>
-                                                    {subTabIndex === 0
-                                                        ? `내가 작성한 글 ${startIdx + idx + 1}`
-                                                        : `내가 스크랩한 글 ${startIdx + idx + 1}`}
-                                                </Title>
-                                                <DateText>2024.04.04</DateText>
-                                                <Description>
-                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
-                                                </Description>
-                                            </ContentText>
-                                        </ContentRow>
-                                    </L2Li>
+                                <L2Li key={idx}>
+                                    <ContentRow>
+                                    <IconWrap>
+                                        <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
+                                    </IconWrap>
+                                    <ContentText>
+                                        <Title>
+                                        {subTabIndex === 0
+                                            ? `내가 작성한 글 ${startIdx + idx + 1}`
+                                            : `내가 스크랩한 글 ${startIdx + idx + 1}`}
+                                        </Title>
+                                        <DateText>2024.04.04</DateText>
+                                        <Description>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
+                                        </Description>
+                                    </ContentText>
+                                    </ContentRow>
+                                </L2Li>
                                 ))}
                             </L2Ul>
                             <PaginationButtons>
-                                <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
-                                <PageIndicator>{currentPage + 1} / {totalPages}</PageIndicator>
-                                <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
+                                <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>
+                                이전
+                                </PaginationBtn>
+                                <PageIndicator>
+                                {currentPage + 1} / {totalPages}
+                                </PageIndicator>
+                                <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
+                                다음
+                                </PaginationBtn>
                             </PaginationButtons>
-                        </Li2>
+                            </>
+                        )}
+                        </Li2>  
                     </MyUl>
                 </Page1>
             </Bg>
