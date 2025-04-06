@@ -77,8 +77,8 @@ const Index = styled.div`
 `;
 
 const IndexImage = styled.img`
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   margin: auto 0;
   display: ${({ isSelected }) => (isSelected ? "none" : "block")};
 `;
@@ -213,11 +213,10 @@ const SubInfo = styled.div`
 
 
 const MainPageFood = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(2);
   const navitage = useNavigate();
-
-  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
+  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
   return (
     <Wrap>
