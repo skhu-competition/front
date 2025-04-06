@@ -23,6 +23,7 @@ const MainPageMap = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const itemsPerPage = 5;
   const writtenItems = Array.from({ length: 10 });
   const rates = {}
@@ -227,18 +228,18 @@ const MainPageMap = () => {
 
     const markerData = [
       {
+        id: 1,
         name: "다원국수",
         position: new naver.maps.LatLng(37.489306, 126.825079),
         description: "국수 맛집.",
         address: "서울 구로구 경인로 22",
-        distance: "학교 정문 걸어서 2분",
       },
       {
+        id: 2,
         name: "국수나무",
         position: new naver.maps.LatLng(37.488197, 126.825349),
         description: "밥먹기 무난무난",
         address: "서울 구로구 연동로 320",
-        distance: "학교 새천년관 지하 1층",
       },
     ];
 
@@ -255,7 +256,7 @@ const MainPageMap = () => {
     // 지도 인스턴스를 ref에 저장
     mapRef.current = map;
 
-    markerData.forEach(({ name, position, description, address, distance }) => {
+    markerData.forEach(({ id, name, position, description, address}) => {
       const marker = new naver.maps.Marker({
         position,
         map,
@@ -263,27 +264,26 @@ const MainPageMap = () => {
 
       const content = `
         <div class="map-info-container">
-            <div class="map-info-window">
-                <div class="info-header">
-                    <span class="place-name">${name}</span>
-                    <div class="info-actions">
-                      <button class="post-review">리뷰 작성하기</button>
-                      <button class="close-btn">✕</button>
-                    </div>
-                </div>
-                <div class="info-rating">
-                    <span class="stars">★☆☆☆☆</span>
-                </div>
-                <div class="info-address">
-                    ${address}<br />
-                    ${distance}
-                </div>
-                <div class="info-extra">
-                    ${description}
-                </div>
+          <div class="map-info-window">
+            <div class="info-header">
+              <span class="place-name">${name}</span>
+              <div class="info-actions">
+                <button class="post-review">리뷰 작성하기</button>
+                <button class="close-btn">✕</button>
+              </div>
             </div>
-            <div class="info-tail-shadow"></div>
-            <div class="info-tail"></div>
+            <div class="info-rating">
+              <span class="stars">★☆☆☆☆</span>
+            </div>
+            <div class="info-address">
+              ${address}<br />
+            </div>
+            <div class="info-extra">
+              ${description}
+            </div>
+          </div>
+          <div class="info-tail-shadow"></div>
+          <div class="info-tail"></div>
         </div>
       `;
 
@@ -298,13 +298,16 @@ const MainPageMap = () => {
       naver.maps.Event.addListener(marker, "click", function () {
         if (infowindow.getMap()) {
           infowindow.close();
+          setSelectedMarkerId(null);
         } else {
           infowindow.open(map, marker);
+          setSelectedMarkerId(id);
           naver.maps.Event.once(map, 'idle', function() {
             const closeBtn = document.querySelector('.close-btn');
             if (closeBtn) {
               closeBtn.addEventListener('click', () => {
                 infowindow.close();
+                setSelectedMarkerId(null);
               });
             }
           });
@@ -318,6 +321,10 @@ const MainPageMap = () => {
       map.setCenter(skhu_position);
     }, 100);
   }, [skhu_position]);
+
+  useEffect(() => {
+    
+  }, [selectedMarkerId])
 
   // 지도 새로고침 함수: 저장해둔 mapRef를 이용해 리사이즈 이벤트 발생
   const refreshMap = () => {
@@ -367,31 +374,34 @@ const MainPageMap = () => {
           <Map ref={container} />
         </Page1>
         <Page2>
+        {selectedMarkerId !== null && (
           <ReviewList>
-          {paginatedItems.map((_, idx) =>
-            <ContentRow>
-              <ContentText>
-                <Author>작성자{startIdx+idx+1}</Author>
+            {paginatedItems.map((_, idx) => (
+              <ContentRow key={idx}>
+                <ContentText>
+                  {/* 리뷰 리스트 예시 - 선택된 마커 id에 따라 내용 변경 가능 */}
+                  <Author>작성자 {startIdx + idx + 1} (마커 {selectedMarkerId})</Author>
                   <StarWrapper>
-                  {Array(itemsPerPage).fill(0).map((_, starIdx) => (
-                    <Star
-                      key={starIdx}
-                      src={star_img} 
-                      alt="star"
-                    />
-                  ))}
+                    {Array(itemsPerPage).fill(0).map((_, starIdx) => (
+                      <Star
+                        key={starIdx}
+                        src={star_img} 
+                        alt="star"
+                      />
+                    ))}
                   </StarWrapper>
-                <Description>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
-                </Description>
-              </ContentText>
-            </ContentRow>
-            )}
-        </ReviewList>
-          <PaginationButtons>
+                  <Description>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
+                  </Description>
+                </ContentText>
+              </ContentRow>
+            ))}
+            <PaginationButtons>
               <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
               <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
-          </PaginationButtons>
+            </PaginationButtons>
+          </ReviewList>
+          )}
         </Page2>
       </Bg>
     </Wrap>

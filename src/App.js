@@ -8,7 +8,7 @@ import MainPageFood from './pages/MainpageFood';
 import MainPageMap from './pages/MainpageMap';
 import MyPage from './pages/Mypage';
 import './assets/fonts/fonts.css';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import './App.css';
 import KakaoLoginHandler from './pages/KakaoLoginHandler';
@@ -17,15 +17,16 @@ import GoogleLoginHandler from './pages/GoogleLoginHandler';
 function App() {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [postMessage, setPosts] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
-    if (token) {
+    if (location.pathname === "/" && token) {
       navigate("/mainpagemap", { replace: true });
     }
-  }, [navigate])
+  }, [navigate, location.pathname]);
 
   const isMobile = useMediaQuery({ query: '(max-width: 1000px' });
   if (isMobile) {
