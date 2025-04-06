@@ -13,11 +13,11 @@ import styled,{keyframes} from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const MainPageFood = () => {
-    const [selectedIndex, setSelectedIndex] = useState(0);
     const navitage = useNavigate();
 
-    const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
-    const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
+    const [selectedIndex, setSelectedIndex] = useState(2);
+    const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+    const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
     
     const Wrap = styled.div`
         width: 100%;
@@ -86,8 +86,8 @@ const MainPageFood = () => {
     const IndexImage = styled.img`
         text-align: center;
         margin: auto 0;
-        width: 70px;
-        height: 70px;
+        width: 50px;
+        height: 50px;
 
         display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
     `

@@ -17,8 +17,8 @@ const CategoryPage = ({ posts }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
-  const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
 
   const filteredPosts = posts.filter((post) => post.category === name);
@@ -111,8 +111,8 @@ const CategoryPage = ({ posts }) => {
   const IndexImage = styled.img`
     text-align: center;
     margin: auto 0;
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
 
     display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
   `
