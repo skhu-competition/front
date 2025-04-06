@@ -5,6 +5,7 @@ import honey_tap_icon from "../assets/honey-tap-icon.png";
 import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import star_img from "../assets/star-img.png";
+import star_img2 from "../assets/star-img2.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -478,9 +479,8 @@ const StarRating = styled.div`
               {[1, 2, 3, 4, 5].map((star) => (
                 <img
                   key={star}
-                  src={star_img}
+                  src={star <= rating ? star_img2 : star_img}
                   alt="별"
-                  style={{ opacity: star <= rating ? 1 : 0.3 }}
                   onClick={() => setRating(star)}
                 />
               ))}
