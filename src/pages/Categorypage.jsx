@@ -122,7 +122,7 @@ const CategoryPage = ({ posts }) => {
     font-weight: bold;
     margin-top: 30px;
   `
-
+  
   return (
     <Wrap>
       <Logo src={logo} alt="logo" onClick={() => navigate('/')} />

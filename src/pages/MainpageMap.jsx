@@ -5,19 +5,25 @@ import honey_tap_icon from "../assets/honey-tap-icon.png";
 import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import star_img from "../assets/star-img.png";
+import star_img2 from "../assets/star-img2.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const { naver } = window;
 
+
 const MainPageMap = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
   const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
-
   const [currentPage, setCurrentPage] = useState(0);
-  
+
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [reviewText, setReviewText] = useState('');
+  const [rating, setRating] = useState(0);
+
   const container = useRef(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
@@ -33,6 +39,65 @@ const MainPageMap = () => {
 
   // 지도 중심 좌표를 컴포넌트 밖에서 선언
   const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
+
+ 
+
+const PopupBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const PopupBox = styled.div`
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+`;
+
+const PopupTextarea = styled.textarea`
+  width: 100%;
+  height: 120px;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+`;
+
+const PopupActions = styled.div`
+  margin-top: 1rem;
+  text-align: right;
+
+  button {
+    margin-left: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #9DBDED;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+`;
+const StarRating = styled.div`
+  display: flex;
+  margin-top: 1rem;
+  gap: 0.25rem;
+
+  img {
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+  }
+`;
 
   const Wrap = styled.div`
     width: 100%;
@@ -311,6 +376,26 @@ const MainPageMap = () => {
               });
             }
           });
+
+    // InfoWindow DOM이 로드된 후 버튼에 이벤트 연결
+    naver.maps.Event.once(map, 'idle', function () {
+      const closeBtn = document.querySelector('.close-btn');
+      const reviewBtn = document.querySelector('.post-review'); // ✅ 리뷰 버튼 선택
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          infowindow.close();
+        });
+      }
+
+      if (reviewBtn) {
+        reviewBtn.addEventListener('click', () => {
+          setSelectedPlace(name); // 선택된 장소 저장
+          setShowReviewPopup(true); // 팝업 열기
+          infowindow.close(); // 팝업 열리면 InfoWindow 닫기
+        });
+      }
+    });
         }
       });
     });
@@ -404,6 +489,37 @@ const MainPageMap = () => {
           )}
         </Page2>
       </Bg>
+      {showReviewPopup && (
+        <PopupBackground>
+          <PopupBox>
+            <h3>{selectedPlace} 리뷰 작성</h3>
+            <StarRating>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <img
+                  key={star}
+                  src={star <= rating ? star_img2 : star_img}
+                  alt="별"
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </StarRating>
+            <PopupTextarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="리뷰를 작성하세요"
+            />
+            <PopupActions>
+              <button onClick={() => setShowReviewPopup(false)}>취소</button>
+              <button onClick={() => {
+                console.log(`${selectedPlace} 리뷰: ${reviewText}, 별점: ${rating}`);
+                setShowReviewPopup(false);
+                setReviewText('');
+                setRating(0);
+              }}>제출</button>
+            </PopupActions>
+          </PopupBox>
+        </PopupBackground>
+      )}
     </Wrap>
   );
 };
