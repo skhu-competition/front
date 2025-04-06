@@ -39,8 +39,8 @@ const Mypage = () => {
         setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
     };
 
-    const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
-    const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+    const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage' ];
+    const indexImages = [ map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon ];
 
     const Wrap = styled.div`
         width: 100%;
