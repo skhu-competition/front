@@ -26,7 +26,7 @@ const KakaoLoginHandler = () => {
     return;
   }
 
-  fetch(`http://localhost:8080/auth/kakao?code=${code}`)
+  fetch(`https://nowskhu.zapto.org/auth/kakao?code=${code}`)
     .then(res => {
       if (!res.ok) throw new Error("토큰 요청 실패");
       return res.json();

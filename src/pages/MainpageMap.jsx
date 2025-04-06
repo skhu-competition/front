@@ -30,12 +30,10 @@ const MainPageMap = () => {
   const location = useLocation();
 
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-  const itemsPerPage = 5;
-  const writtenItems = Array.from({ length: 10 });
-  const rates = {}
-  const startIdx = currentPage * itemsPerPage;
-  const paginatedItems = writtenItems.slice(startIdx, startIdx + itemsPerPage);
-  const totalPages = Math.ceil(writtenItems.length / itemsPerPage);
+  const [reviewData, setReviewData] = useState([]);
+  const [writtenItems, setWrittenItems] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
+  //Math.ceil(writtenItems.length / itemsPerPage);
 
   // 지도 중심 좌표를 컴포넌트 밖에서 선언
   const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
@@ -287,6 +285,21 @@ const StarRating = styled.div`
         opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
         pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     `;
+    const EmptyState = styled.div`
+      width: 100%;
+      height: 100%;
+      padding-top: 6rem;
+      text-align: center;
+      color: #888;
+      font-size: 1rem;
+      line-height: 1.5;
+
+      img {
+        width: 200px;
+        opacity: 0.6;
+        margin-bottom: 1.5rem;
+      }
+    `;
 
   useEffect(() => {
     if (!container.current || !naver || !naver.maps) return;
@@ -327,7 +340,8 @@ const StarRating = styled.div`
         map,
       });
 
-      const content = `
+      const content = document.createElement("div");
+      content.innerHTML = ` 
         <div class="map-info-container">
           <div class="map-info-window">
             <div class="info-header">
@@ -364,18 +378,33 @@ const StarRating = styled.div`
         if (infowindow.getMap()) {
           infowindow.close();
           setSelectedMarkerId(null);
+          setReviewData([]);
         } else {
           infowindow.open(map, marker);
           setSelectedMarkerId(id);
-          naver.maps.Event.once(map, 'idle', function() {
-            const closeBtn = document.querySelector('.close-btn');
-            if (closeBtn) {
-              closeBtn.addEventListener('click', () => {
-                infowindow.close();
-                setSelectedMarkerId(null);
+
+          fetch (`https://nowskhu.zapto.org/place/${id}/review`)
+            .then(res => res.json())
+            .then(data => {
+              setReviewData(data.reviews);
+
+              naver.maps.Event.once(map, 'idle', function() {
+                const closeBtn = document.querySelector('.close-btn');
+                if (closeBtn) {
+                  closeBtn.addEventListener('click', () => {
+                    infowindow.close();
+                    setSelectedMarkerId(null);
+                    setReviewData([]);
+                  });
+                }
               });
-            }
-          });
+            })
+            .catch(err => {
+              console.log("리뷰 요청 실패", err);
+              setReviewData([]);
+            });
+
+          
 
     // InfoWindow DOM이 로드된 후 버튼에 이벤트 연결
     naver.maps.Event.once(map, 'idle', function () {
@@ -459,34 +488,41 @@ const StarRating = styled.div`
           <Map ref={container} />
         </Page1>
         <Page2>
-        {selectedMarkerId !== null && (
           <ReviewList>
-            {paginatedItems.map((_, idx) => (
-              <ContentRow key={idx}>
-                <ContentText>
-                  {/* 리뷰 리스트 예시 - 선택된 마커 id에 따라 내용 변경 가능 */}
-                  <Author>작성자 {startIdx + idx + 1} (마커 {selectedMarkerId})</Author>
-                  <StarWrapper>
-                    {Array(itemsPerPage).fill(0).map((_, starIdx) => (
-                      <Star
-                        key={starIdx}
-                        src={star_img} 
-                        alt="star"
-                      />
-                    ))}
-                  </StarWrapper>
-                  <Description>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
-                  </Description>
-                </ContentText>
-              </ContentRow>
-            ))}
-            <PaginationButtons>
-              <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
-              <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
-            </PaginationButtons>
+            {selectedMarkerId === null ? (
+              <EmptyState>
+                <img src="../assets/empty.png" alt="지도 안내" />
+                <p>지도의 핀을 클릭하면 리뷰를 볼 수 있어요!</p>
+              </EmptyState>
+            ) : (
+              <>
+              {reviewData.length > 0 ? (
+                reviewData.map((review, idx) => (
+                  <ContentRow key={idx}>
+                    <ContentText>
+                      <Author>{review.userName}</Author>
+                      <StarWrapper>
+                        {Array(review.rating).fill(0).map((_, i) => (
+                          <Star key={i} src={star_img} alt="star" />
+                        ))}
+                      </StarWrapper>
+                      <Description>{review.content}</Description>
+                    </ContentText>
+                  </ContentRow>
+                ))
+              ) : (
+                <EmptyState>
+                  <p>아직 작성된 리뷰가 없습니다.</p>
+                </EmptyState>
+              )}
+
+                <PaginationButtons>
+                  <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
+                  <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>다음</PaginationBtn>
+                </PaginationButtons>
+              </>
+            )}
           </ReviewList>
-          )}
         </Page2>
       </Bg>
       {showReviewPopup && (
