@@ -1,4 +1,4 @@
-import "./css/Mainpage-map.css"
+import "./css/Mainpage-map.css";
 import logo from "../assets/logo.png";
 import food_tap_icon from "../assets/food-tap-icon.png";
 import honey_tap_icon from "../assets/honey-tap-icon.png";
@@ -6,6 +6,8 @@ import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import star_img from "../assets/star-img.png";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import styled from "styled-components";
 
 const { naver } = window;
 
@@ -250,7 +252,8 @@ const MainPageMap = () => {
       },
     });
 
-        const map = new naver.maps.Map(container.current, options);
+    // 지도 인스턴스를 ref에 저장
+    mapRef.current = map;
 
     markerData.forEach(({ name, position, description, address, distance }) => {
       const marker = new naver.maps.Marker({
