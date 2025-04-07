@@ -189,15 +189,15 @@ export const PaginationBtn = styled.button`
 
 export const EmptyState = styled.div`
   width: 100%;
-  height: 100%;
+  height: 70%;
   padding-top: 6rem;
   text-align: center;
   color: #888;
-  font-size: 1rem;
+  font-size: 1.2rem;
   line-height: 1.5;
 
   img {
-    width: 200px;
+    width: 100px;
     opacity: 0.6;
     margin-bottom: 1.5rem;
   }

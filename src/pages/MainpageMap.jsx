@@ -7,6 +7,7 @@ import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import star_img from "../assets/star-img.png";
 import star_img2 from "../assets/star-img2.png";
+import noPostIcon from "../assets/empty.png";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "../api/AxiosInstance";
@@ -194,7 +195,7 @@ const MainPageMap = () => {
           <ReviewList>
             {selectedMarkerId === null ? (
               <EmptyState>
-                <img src="../assets/empty.png" alt="지도 안내" />
+                <img src={noPostIcon} alt="지도 안내" />
                 <p>지도의 핀을 클릭하면 리뷰를 볼 수 있어요!</p>
               </EmptyState>
             ) : (
