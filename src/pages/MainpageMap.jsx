@@ -251,9 +251,22 @@ const MainPageMap = () => {
               <button onClick={() => setShowReviewPopup(false)}>취소</button>
               <button onClick={() => {
                 console.log(`${selectedPlace} 리뷰: ${reviewText}, 별점: ${rating}`);
-                setShowReviewPopup(false);
-                setReviewText('');
-                setRating(0);
+                
+                if (!reviewText.trim() || rating === 0) {
+                  alert("리뷰 내용과 별점을 모두 입력해주세요.");
+                  return;
+                }
+
+                axios.post(`/place/${selectedMarkerId}/review`, {
+                  content: reviewText,
+                  rating: rating
+                })
+                .then(() => {
+                  alert("리뷰가 등록되었습니다!");
+                  setShowReviewPopup(false);
+                  setReviewText('');
+                  setRating(0);
+                })
               }}>제출</button>
             </PopupActions>
           </PopupBox>
