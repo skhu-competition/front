@@ -1,4 +1,8 @@
 import logo from "../assets/logo.png";
+import food_tap_icon from "../assets/food-tap-icon.png";
+import honey_tap_icon from "../assets/honey-tap-icon.png";
+import map_tap_icon from "../assets/map-tap-icon.png";
+import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import { useState } from "react";
 import food1 from "../assets/food1.png";
 import food2 from "../assets/food2.png";
@@ -6,8 +10,14 @@ import food3 from "../assets/food3.png";
 import food4 from "../assets/food4.png";
 import food5 from "../assets/food5.png";
 import styled,{keyframes} from "styled-components";
+import { useNavigate } from "react-router-dom";
+
 const MainPageFood = () => {
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const navitage = useNavigate();
+
+    const indexImages = [food_tap_icon, honey_tap_icon, map_tap_icon, mypage_tap_icon];
+    const routes = ['/mainpagefood', '/mainpagehoney', '/mainpagemap', '/mypage'];
     
     const Wrap = styled.div`
         width: 100%;
@@ -40,7 +50,7 @@ const MainPageFood = () => {
         overflow: hidden;
         position: relative;
     `
-    const Index_list = styled.ul`
+    const IndexList = styled.ul`
         margin-top: 1.5rem;
         display: flex;
         margin: 0;
@@ -52,20 +62,35 @@ const MainPageFood = () => {
     `
     const Index = styled.div`
         width: 5rem;
-        height: 7rem;
-        background-color: #fafcff;
+        height: ${({ active }) => (active ? '10rem' : '7rem')};
+        background-color: ${({ active }) => (active ? '#9DBDED' : '#FAFCFF')};
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
     
         &:hover {
-        cursor: pointer;
-        height: 10rem;
-        background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+            cursor: pointer;
+            height: 10rem;
+            background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
+
+            img {
+                opacity: 0;
+            }
         }
     `;
+
+    const IndexImage = styled.img`
+        text-align: center;
+        margin: auto 0;
+        width: 70px;
+        height: 70px;
+
+        display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
+    `
   
     const Page1 = styled.div`
         display: flex;
@@ -159,17 +184,21 @@ const MainPageFood = () => {
     `
     return(
         <Wrap>
-            <Logo src={logo} alt="logo" />
-            <Index_list>
+            <Logo src={logo} alt="logo" onClick={() => navitage('/')} />
+            <IndexList>
             {[0, 1, 2, 3].map((i) => (
                 <Index
                     key={i}
                     active={selectedIndex === i}
-                    onClick={() => setSelectedIndex(i)}
+                    onClick={() => {
+                        setSelectedIndex(i);
+                        navitage(routes[i]);
+                    }}
                 >
+                <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
                 </Index>
             ))}
-            </Index_list>
+            </IndexList>
             <Bg>
                 <Page1> 
                     <Intro>회대 맛집 Top5</Intro>

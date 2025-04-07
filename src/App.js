@@ -6,7 +6,8 @@ import { useState } from "react";
 import PostDetailPage from './pages/PostDetailPage';
 import MainPageFood from './pages/MainpageFood';
 import MainPageMap from './pages/MainpageMap';
-import './assets/fonts/fonts.css'
+import MyPage from './pages/Mypage';
+import './assets/fonts/fonts.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import './App.css';
@@ -19,8 +20,8 @@ function App() {
   if (isMobile) {
     return (
       <div className='mobile-display'>
-        <div style={{ flexDirection: "row", gap: "0", justifyContent: "center", alignItems: "center" }}>
-          데스크톱만 가능합니다.
+        <div>
+            데스크톱만 가능합니다.
         </div>
       </div>
     )
@@ -34,6 +35,7 @@ function App() {
         <Route path="/mainpagehoney" element={<MainPageHoney />} />
         <Route path="/mainpagefood" element={<MainPageFood />} />
         <Route path="/mainpagemap" element={<MainPageMap />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/category/:name" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
         <Route path="/post/:id" element={<PostDetailPage />} /> {/* 글 상세페이지 */}
       </Routes>
