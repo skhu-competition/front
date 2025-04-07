@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import paperIcon from "../assets/paper-icon.png";
 import noPostIcon from "../assets/empty.png";
 import penIcon from "../assets/pen-icon.png";
@@ -11,26 +11,49 @@ import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import "./css/Categorypage.css";
 import styled from "styled-components";
+import axios from '../api/AxiosInstance';
 
-const CategoryPage = ({ posts }) => {
-  const { name } = useParams();
+const categoryMapping = [
+  { id: '1', category: '공부' },
+  { id: '2', category: '새내기' },
+  { id: '3', category: '기숙사' }
+];
+
+const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
+const routes = ['/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
+
+const CategoryPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
-  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
+  const [posts, setPosts ] = useState([]);
 
+  const categoryCorrect = categoryMapping.find((item) => item.id === id);
 
-  const filteredPosts = posts.filter((post) => post.category === name);
+  useEffect(() => {
+    axios.get(`/tip/categori`)
+  })
+
+  useEffect(() => {
+    if (id && !categoryCorrect) {
+      navigate('/mainpagehoney', { replace: true });
+    }
+  }, [id, categoryCorrect, navigate]);
+
+  if (!categoryCorrect) return null;
+
+  const filteredPosts = posts.filter((post) => post.category === id);
 
   const handleSubmit = () => {
     if (title.trim() && content.trim()) {
       const newPost = {
         title,
         content,
-        category: name,
+        category: id,
         date: new Date().toISOString().split("T")[0],
       };
       alert("글이 등록되었습니다! (임시)");
@@ -144,7 +167,7 @@ const CategoryPage = ({ posts }) => {
 
       <div className="category-bg">
         <div className="category-header">
-          <Intro>{name} 게시판 ▷</Intro>
+          <Intro>{categoryCorrect.category} 게시판 ▷</Intro>
           <button className="write-btn" onClick={() => setIsModalOpen(true)}>
             <img src={penIcon} alt="글쓰기" className="write-icon" />
             글쓰기
@@ -182,10 +205,8 @@ const CategoryPage = ({ posts }) => {
         <div className="modal-overlay">
           <div className="modal-content">
           <button className="close-btn" onClick={() => setIsModalOpen(false)}>
-  <img src={xIcon} alt="닫기" className="close-icon" />
-</button>
-
-
+            <img src={xIcon} alt="닫기" className="close-icon" />
+          </button>
             <div className="modal-header">
               <img src={paperIcon} alt="paper" className="modal-icon-small" />
               <div className="modal-header-text">
