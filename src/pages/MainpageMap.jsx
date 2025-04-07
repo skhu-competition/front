@@ -9,13 +9,14 @@ import star_img from "../assets/star-img.png";
 import star_img2 from "../assets/star-img2.png";
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "../api/AxiosInstance";
 import {
   Wrap, Logo, Bg, IndexList, Index, IndexImage, Page1, Page2,
   Intro, MapContainer, ReviewList, ContentRow, ContentText,
   Title, Star, Description, Author, StarWrapper, PaginationButtons,
   PaginationBtn, EmptyState, PopupBackground, PopupBox, PopupTextarea,
   PopupActions, StarRating
-} from "./css/MainPageMap.styles"; // styled-components 분리된 파일
+} from "./css/MainPageMap.styles";
 
 const { naver } = window;
 
@@ -110,11 +111,10 @@ const MainPageMap = () => {
       infowindow.close();
     });
 
-    fetch(`https://nowskhu.zapto.org/place/${id}/review`)
-      .then(res => res.json())
-      .then(data => {
-        setReviewData(data.reviews);
-        setTotalPages(Math.ceil(data.reviews.length / itemsPerPage));
+    axios.get(`/place/${id}/review`)
+      .then(res => {
+        setReviewData(res.data.reviews);
+        setTotalPages(Math.ceil(res.data.reviews.length / itemsPerPage));
         requestAnimationFrame(() => {
           naver.maps.Event.trigger(map, 'resize');
           map.setCenter(position);

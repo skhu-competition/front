@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
+import axios from "../api/AxiosInstance";
 
 const KakaoLoginHandler = () => {
     const [searchParams] = useSearchParams();
@@ -26,18 +27,17 @@ const KakaoLoginHandler = () => {
     return;
   }
 
-  fetch(`https://nowskhu.zapto.org/auth/kakao?code=${code}`)
-    .then(res => {
-      if (!res.ok) throw new Error("토큰 요청 실패");
-      return res.json();
+  axios.get("/auth/kakao", {
+      params: { code }
     })
-    .then(data => {
-      localStorage.setItem("access_token", data.accessToken);
-      localStorage.setItem("refresh_token", data.refreshToken);
+    .then((res) => {
+      const { accessToken, refreshToken } = res.data;
+      localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("refresh_token", refreshToken);
       navigate("/mainpagemap", { replace: true });
     })
-    .catch(err => {
-      console.error(err);
+    .catch((err) => {
+      console.error("카카오 로그인 실패:", err.response?.data || err.message);
       navigate("/");
     });
 
