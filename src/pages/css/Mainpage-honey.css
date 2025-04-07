@@ -99,7 +99,7 @@
 }
 
 .folder-label {
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     font-weight: 400;
     margin: 0;
@@ -115,7 +115,7 @@
 }
 
 .folder-img {
-    width: 35rem;
+    width: 70%;
     height: auto;
     transition: transform 0.3s ease;
     margin-top: 3rem;

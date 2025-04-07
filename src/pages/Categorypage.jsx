@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import paperIcon from "../assets/paper-icon.png";
 import noPostIcon from "../assets/empty.png";
+import penIcon from "../assets/pen-icon.png";
+import xIcon from "../assets/x-icon.png";
 import logo from "../assets/logo.png";
 import "./css/Categorypage.css";
 
@@ -23,15 +25,14 @@ const CategoryPage = ({ posts }) => {
         date: new Date().toISOString().split("T")[0],
       };
       alert("글이 등록되었습니다! (임시)");
-      setIsModalOpen(false); //현재 비어있는 배열 상태
+      setIsModalOpen(false);
       setTitle("");
       setContent("");
-      // 여기에서 setPosts로 추가해주려면 App에서 상태 관리 필요!
     }
   };
 
   const currentDate = new Date().toISOString().split("T")[0];
-  const currentUser = "전뚠뚠 누나"; // 실제 유저 정보 받으면 props나 context로 수정하겠습니당
+  const currentUser = "전뚠뚠 누나";
 
   return (
     <div className="wrap">
@@ -47,7 +48,8 @@ const CategoryPage = ({ posts }) => {
         <div className="category-header">
           <h2 className="category-title">{name} 게시판 ▷</h2>
           <button className="write-btn" onClick={() => setIsModalOpen(true)}>
-            🖋 글쓰기
+            <img src={penIcon} alt="글쓰기" className="write-icon" />
+            글쓰기
           </button>
         </div>
 
@@ -81,7 +83,10 @@ const CategoryPage = ({ posts }) => {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-btn" onClick={() => setIsModalOpen(false)}>X</button>
+          <button className="close-btn" onClick={() => setIsModalOpen(false)}>
+  <img src={xIcon} alt="닫기" className="close-icon" />
+</button>
+
 
             <div className="modal-header">
               <img src={paperIcon} alt="paper" className="modal-icon-small" />
@@ -95,8 +100,8 @@ const CategoryPage = ({ posts }) => {
                 />
 
                 <div className="modal-subinfo">
-                  아이디 : 전뚠뚠 누나<br /> 
-                  날짜 : {new Date().toISOString().split("T")[0]}
+                  아이디 : {currentUser}<br />
+                  날짜 : {currentDate}
                 </div>
               </div>
             </div>
