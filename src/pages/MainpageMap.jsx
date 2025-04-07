@@ -1,4 +1,3 @@
-// MainPageMap.jsx
 import "./css/Mainpage-map.css";
 import logo from "../assets/logo.png";
 import food_tap_icon from "../assets/food-tap-icon.png";
@@ -114,7 +113,7 @@ const MainPageMap = () => {
 
     axios.get(`/place/${id}/review`)
       .then(res => {
-        setReviewData(res.data.reviews);
+                setReviewData(res.data.reviews);
         setTotalPages(Math.ceil(res.data.reviews.length / itemsPerPage));
         requestAnimationFrame(() => {
           naver.maps.Event.trigger(map, 'resize');
