@@ -1,3 +1,4 @@
+// MainPageMap.jsx
 import "./css/Mainpage-map.css";
 import logo from "../assets/logo.png";
 import food_tap_icon from "../assets/food-tap-icon.png";
@@ -6,18 +7,22 @@ import map_tap_icon from "../assets/map-tap-icon.png";
 import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import star_img from "../assets/star-img.png";
 import star_img2 from "../assets/star-img2.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import {
+  Wrap, Logo, Bg, IndexList, Index, IndexImage, Page1, Page2,
+  Intro, MapContainer, ReviewList, ContentRow, ContentText,
+  Title, Star, Description, Author, StarWrapper, PaginationButtons,
+  PaginationBtn, EmptyState, PopupBackground, PopupBox, PopupTextarea,
+  PopupActions, StarRating
+} from "./css/MainPageMap.styles"; // styled-components 분리된 파일
 
 const { naver } = window;
-
 
 const MainPageMap = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
   const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
-  const [currentPage, setCurrentPage] = useState(0);
 
   const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState('');
@@ -31,295 +36,98 @@ const MainPageMap = () => {
 
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [reviewData, setReviewData] = useState([]);
-  const [writtenItems, setWrittenItems] = useState(null);
-  const [totalPages, setTotalPages] = useState(null);
-  //Math.ceil(writtenItems.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // 지도 중심 좌표를 컴포넌트 밖에서 선언
-  const skhu_position = new naver.maps.LatLng(37.487700, 126.825400);
+  const itemsPerPage = 5;
+  const startIdx = currentPage * itemsPerPage;
+  const paginatedItems = reviewData.slice(startIdx, startIdx + itemsPerPage);
 
- 
+  const skhu_position = useMemo(() => new naver.maps.LatLng(37.487700, 126.825400), []);
 
-const PopupBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
+  const markerData = useMemo(() => [
+    {
+      id: 1,
+      name: "다원국수",
+      position: new naver.maps.LatLng(37.489306, 126.825079),
+      description: "국수 맛집.",
+      address: "서울 구로구 경인로 22",
+    },
+    {
+      id: 2,
+      name: "국수나무",
+      position: new naver.maps.LatLng(37.488197, 126.825349),
+      description: "밥먹기 무난무난",
+      address: "서울 구로구 연동로 320",
+    },
+  ], []);
 
-const PopupBox = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-`;
+  const handleMarkerClick = useCallback((map, marker, place) => {
+    const { id, name, position, description, address } = place;
 
-const PopupTextarea = styled.textarea`
-  width: 100%;
-  height: 120px;
-  margin-top: 1rem;
-  padding: 0.5rem;
-  box-sizing: border-box;
-`;
-
-const PopupActions = styled.div`
-  margin-top: 1rem;
-  text-align: right;
-
-  button {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    background-color: #9DBDED;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-`;
-const StarRating = styled.div`
-  display: flex;
-  margin-top: 1rem;
-  gap: 0.25rem;
-
-  img {
-    width: 1.5rem;
-    height: 1.5rem;
-    cursor: pointer;
-  }
-`;
-
-  const Wrap = styled.div`
-    width: 100%;
-    height: 100vh;
-    background-color: #E0ECFD;
-    position: relative;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-  `;
-
-  const Logo = styled.img`
-    position: absolute;
-    width: 13rem; 
-    top: 3rem;
-    left: 1rem;
-    cursor: pointer;
-    z-index: 2;
-  `;
-
-  const Bg = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    width: calc(100% - 15rem);
-    height: 85vh;
-    border-top-left-radius: 3rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    position: relative;
-  `;
-
-  const IndexList = styled.ul`
-    margin-top: 1.5rem;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    align-self: center;
-    flex-direction: column;
-    gap: 2rem;
-  `;
-
-  const Index = styled.div`
-    width: 5rem;
-    height: ${({ active }) => (active ? '10rem' : '7rem')};
-    background-color: ${({ active }) => (active ? '#9DBDED' : '#FAFCFF')};
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-
-    &:hover {
-      cursor: pointer;
-      height: 10rem;
-      background-color: ${({ active }) => (active ? '#9DBDED' : '#dceaff')};
-
-      img {
-        opacity: 0;
-      }
-    }
-  `;
-
-  const IndexImage = styled.img`
-    text-align: center;
-    margin: auto 0;
-    width: 50px;
-    height: 50px;
-
-    display: ${({ isSelected }) => (isSelected ? 'none' : 'block')}
-  `
-
-  const Page1 = styled.div`
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    padding: 2rem 0 5rem 5rem;
-    box-sizing: border-box;
-  `;
-
-  const Page2 = styled.div`
-    flex: 0.7;
-    height: 100%;
-    max-height: 100%;
-    margin-right: 2rem;
-    margin-left: 5rem;
-  `
-
-  const Intro = styled.p`
-    width: 100%;
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    margin-top: 30px;
-  `;
-
-  const Map = styled.div`
-    border-radius: 2rem;
-    margin-top: 20px;
-    width: 100%;
-    height: 600px;
-  `;
-
-  const ReviewList = styled.div`
-    width: 100%;
-    margin-top: 8rem;
-    height: 72%;
-    overflow-y: auto;
-    max-height: 100%;
-    overflow-x: hidden; 
-    border-radius: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  `
-
-  const ContentRow = styled.div`
-    margin-left: 3rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden; 
-  `;
-
-  const ContentText = styled.div`
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        overflow: hidden;
-    `;
-    const Title = styled.p`
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin: 0;
+    const wrapper = document.createElement("div");
+    wrapper.className = "map-info-container";
+    wrapper.innerHTML = `
+      <div class="map-info-window">
+        <div class="info-header">
+          <span class="place-name">${name}</span>
+          <div class="info-actions">
+            <button class="post-review">리뷰 작성하기</button>
+            <button class="close-btn">✕</button>
+          </div>
+        </div>
+        <div class="info-rating"><span class="stars">★☆☆☆☆</span></div>
+        <div class="info-address">${address}</div>
+        <div class="info-extra">${description}</div>
+      </div>
+      <div class="info-tail-shadow"></div>
+      <div class="info-tail"></div>
     `;
 
-    const Star = styled.img`
-      width: 1.3rem;
-      margin-bottom: -0.1rem;
-    `;
+    const infowindow = new naver.maps.InfoWindow({
+      content: wrapper,
+      borderWidth: 0,
+      disableAnchor: true,
+      backgroundColor: 'transparent',
+      pixelOffset: new naver.maps.Point(0, -28),
+    });
 
-    const Description = styled.p`
-        font-size: 0.9rem;
-        color: #444;
-        margin: 0;
+    infowindow.open(map, marker);
+    setSelectedMarkerId(id);
+    setSelectedPlace(name);
 
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    const closeBtn = wrapper.querySelector(".close-btn");
+    const reviewBtn = wrapper.querySelector(".post-review");
 
-        width: 80%; 
-        display: block;
-    `;
+    closeBtn?.addEventListener("click", () => {
+      infowindow.close();
+      setSelectedMarkerId(null);
+      setReviewData([]);
+    });
 
-    const Author = styled.p`
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-top: 30px;
-      margin-bottom: 0;
-    `
+    reviewBtn?.addEventListener("click", () => {
+      setShowReviewPopup(true);
+      infowindow.close();
+    });
 
-    const StarWrapper = styled.div`
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    `
-
-    const PaginationButtons = styled.div`
-        display: flex;
-        justify-content: space-evenly;
-        padding: 1rem 2rem;
-    `;
-
-    const PaginationBtn = styled.button`
-        background-color: #9DBDED;
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
-        pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
-    `;
-    const EmptyState = styled.div`
-      width: 100%;
-      height: 100%;
-      padding-top: 6rem;
-      text-align: center;
-      color: #888;
-      font-size: 1rem;
-      line-height: 1.5;
-
-      img {
-        width: 200px;
-        opacity: 0.6;
-        margin-bottom: 1.5rem;
-      }
-    `;
+    fetch(`https://nowskhu.zapto.org/place/${id}/review`)
+      .then(res => res.json())
+      .then(data => {
+        setReviewData(data.reviews);
+        setTotalPages(Math.ceil(data.reviews.length / itemsPerPage));
+        requestAnimationFrame(() => {
+          naver.maps.Event.trigger(map, 'resize');
+          map.setCenter(position);
+        });
+      })
+      .catch(err => {
+        console.error("리뷰 요청 실패", err);
+        setReviewData([]);
+      });
+  }, []);
 
   useEffect(() => {
-    if (!container.current || !naver || !naver.maps) return;
-
-    const markerData = [
-      {
-        id: 1,
-        name: "다원국수",
-        position: new naver.maps.LatLng(37.489306, 126.825079),
-        description: "국수 맛집.",
-        address: "서울 구로구 경인로 22",
-      },
-      {
-        id: 2,
-        name: "국수나무",
-        position: new naver.maps.LatLng(37.488197, 126.825349),
-        description: "밥먹기 무난무난",
-        address: "서울 구로구 연동로 320",
-      },
-    ];
+    if (!container.current || !window.naver || !window.naver.maps) return;
 
     const map = new naver.maps.Map(container.current, {
       center: skhu_position,
@@ -331,132 +139,27 @@ const StarRating = styled.div`
       },
     });
 
-    // 지도 인스턴스를 ref에 저장
     mapRef.current = map;
 
-    markerData.forEach(({ id, name, position, description, address}) => {
+    markerData.forEach(place => {
       const marker = new naver.maps.Marker({
-        position,
+        position: place.position,
         map,
       });
 
-      const content = document.createElement("div");
-      content.innerHTML = ` 
-        <div class="map-info-container">
-          <div class="map-info-window">
-            <div class="info-header">
-              <span class="place-name">${name}</span>
-              <div class="info-actions">
-                <button class="post-review">리뷰 작성하기</button>
-                <button class="close-btn">✕</button>
-              </div>
-            </div>
-            <div class="info-rating">
-              <span class="stars">★☆☆☆☆</span>
-            </div>
-            <div class="info-address">
-              ${address}<br />
-            </div>
-            <div class="info-extra">
-              ${description}
-            </div>
-          </div>
-          <div class="info-tail-shadow"></div>
-          <div class="info-tail"></div>
-        </div>
-      `;
-
-      const infowindow = new naver.maps.InfoWindow({
-        content,
-        borderWidth: 0,
-        disableAnchor: true,
-        backgroundColor: 'transparent',
-        pixelOffset: new naver.maps.Point(0, -28),
-      });
-
-      naver.maps.Event.addListener(marker, "click", function () {
-        if (infowindow.getMap()) {
-          infowindow.close();
-          setSelectedMarkerId(null);
-          setReviewData([]);
-        } else {
-          infowindow.open(map, marker);
-          setSelectedMarkerId(id);
-
-          fetch (`https://nowskhu.zapto.org/place/${id}/review`)
-            .then(res => res.json())
-            .then(data => {
-              setReviewData(data.reviews);
-
-              naver.maps.Event.once(map, 'idle', function() {
-                const closeBtn = document.querySelector('.close-btn');
-                if (closeBtn) {
-                  closeBtn.addEventListener('click', () => {
-                    infowindow.close();
-                    setSelectedMarkerId(null);
-                    setReviewData([]);
-                  });
-                }
-              });
-            })
-            .catch(err => {
-              console.log("리뷰 요청 실패", err);
-              setReviewData([]);
-            });
-
-          
-
-    // InfoWindow DOM이 로드된 후 버튼에 이벤트 연결
-    naver.maps.Event.once(map, 'idle', function () {
-      const closeBtn = document.querySelector('.close-btn');
-      const reviewBtn = document.querySelector('.post-review'); // ✅ 리뷰 버튼 선택
-
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          infowindow.close();
-        });
-      }
-
-      if (reviewBtn) {
-        reviewBtn.addEventListener('click', () => {
-          setSelectedPlace(name); // 선택된 장소 저장
-          setShowReviewPopup(true); // 팝업 열기
-          infowindow.close(); // 팝업 열리면 InfoWindow 닫기
-        });
-      }
-    });
-        }
+      naver.maps.Event.addListener(marker, "click", () => {
+        handleMarkerClick(map, marker, place);
       });
     });
 
-    // 초기 로드 시 지도 컨테이너 크기 재계산
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       naver.maps.Event.trigger(map, "resize");
       map.setCenter(skhu_position);
-    }, 100);
-  }, [skhu_position]);
+    });
+  }, [markerData, skhu_position, handleMarkerClick]);
 
-  useEffect(() => {
-    
-  }, [selectedMarkerId])
-
-  // 지도 새로고침 함수: 저장해둔 mapRef를 이용해 리사이즈 이벤트 발생
-  const refreshMap = () => {
-    if (mapRef.current && naver && naver.maps) {
-      setTimeout(() => {
-        naver.maps.Event.trigger(mapRef.current, "resize");
-        mapRef.current.setCenter(skhu_position);
-      }, 100);
-    }
-  };
-
-  const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 0));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
-  };
+  const goToPreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 0));
+  const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1));
 
   return (
     <Wrap>
@@ -467,17 +170,17 @@ const StarRating = styled.div`
             key={i}
             active={selectedIndex === i}
             onClick={() => {
-              // 이미 해당 경로에 있다면 (특히 Index 2) refreshMap 호출
-              if (routes[i] === location.pathname) {
-                if (i === 0) {
-                  refreshMap();
-                }
+              if (routes[i] === location.pathname && i === 0) {
+                requestAnimationFrame(() => {
+                  naver.maps.Event.trigger(mapRef.current, "resize");
+                  mapRef.current.setCenter(skhu_position);
+                });
               } else {
                 setSelectedIndex(i);
                 navigate(routes[i]);
               }
             }}
-            >
+          >
             <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
           </Index>
         ))}
@@ -485,7 +188,7 @@ const StarRating = styled.div`
       <Bg>
         <Page1>
           <Intro>회대 지도</Intro>
-          <Map ref={container} />
+          <MapContainer ref={container} />
         </Page1>
         <Page2>
           <ReviewList>
@@ -496,25 +199,25 @@ const StarRating = styled.div`
               </EmptyState>
             ) : (
               <>
-              {reviewData.length > 0 ? (
-                reviewData.map((review, idx) => (
-                  <ContentRow key={idx}>
-                    <ContentText>
-                      <Author>{review.userName}</Author>
-                      <StarWrapper>
-                        {Array(review.rating).fill(0).map((_, i) => (
-                          <Star key={i} src={star_img} alt="star" />
-                        ))}
-                      </StarWrapper>
-                      <Description>{review.content}</Description>
-                    </ContentText>
-                  </ContentRow>
-                ))
-              ) : (
-                <EmptyState>
-                  <p>아직 작성된 리뷰가 없습니다.</p>
-                </EmptyState>
-              )}
+                {paginatedItems.length > 0 ? (
+                  paginatedItems.map((review, idx) => (
+                    <ContentRow key={idx}>
+                      <ContentText>
+                        <Author>{review.userName}</Author>
+                        <StarWrapper>
+                          {Array(review.rating).fill(0).map((_, i) => (
+                            <Star key={i} src={star_img} alt="star" />
+                          ))}
+                        </StarWrapper>
+                        <Description>{review.content}</Description>
+                      </ContentText>
+                    </ContentRow>
+                  ))
+                ) : (
+                  <EmptyState>
+                    <p>아직 작성된 리뷰가 없습니다.</p>
+                  </EmptyState>
+                )}
 
                 <PaginationButtons>
                   <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>이전</PaginationBtn>
