@@ -9,6 +9,7 @@ import logout_icon from "../assets/logout-icon.png";
 import pen_icon from "../assets/pen-icon2.png";
 import bookmark_icon from "../assets/bookmark-icon.png"
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "../api/AxiosInstance";
 
 const Mypage = () => {
     const [selectedIndex, setSelectedIndex] = useState(3);
@@ -27,10 +28,21 @@ const Mypage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [userImgURL, setUserImgURL] = useState(null);
     useEffect(() => {
         setCurrentPage(0); 
     }, [subTabIndex]);
 
+    useEffect(() => {
+        axios.get(`/mypage/info`)
+        .then(res => {
+            setUserImgURL(res.data.profileImage)
+        })
+        .catch(err=> {
+            console.error("요청 실패", err);
+            setUserImgURL(null);
+        })
+    }, [])
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 0));
     };
@@ -336,6 +348,8 @@ const Mypage = () => {
         color: #555;
         align-self: center;
     `;
+
+    
     return (
         <Wrap>
             <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
@@ -358,7 +372,7 @@ const Mypage = () => {
                     <Intro>마이페이지</Intro>
                     <MyUl>
                         <Li1>
-                            <Profile src={mypage_tap_icon} alt="profile" />
+                            <Profile src={userImgURL ? userImgURL : mypage_tap_icon} alt="profile" />
                             <Logout src={logout_icon} alt="logout" />
                             <L1BottomUL>
                                 <BottonLi onClick={() => setSubTabIndex(0)}>
