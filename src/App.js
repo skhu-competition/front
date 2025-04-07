@@ -24,7 +24,7 @@ function App() {
     const token = localStorage.getItem("access_token");
 
     if (location.pathname === "/" && token) {
-      navigate("/mainpagemap", { replace: true });
+      navigate("/mypage", { replace: true });
     }
   }, [navigate, location.pathname]);
 
