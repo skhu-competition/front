@@ -41,8 +41,8 @@
 
 /* 문서 아이콘 */
 .postdetail-icon {
-  width: 17rem;
-  height: auto;
+  max-width: 20rem;
+  max-height: 25rem;
   margin-right: 2rem;
 }
 
