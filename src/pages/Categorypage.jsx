@@ -34,6 +34,8 @@ const CategoryPage = () => {
   const [posts, setPosts ] = useState([]);
   const uploadImg = useRef(null);
   const [preview, setPreview] = useState(null);
+  const titleRef = useRef(null);
+  const contentRef = useRef(null);
 
   const categoryCorrect = categoryMapping.find((item) => item.id === id);
   
@@ -57,6 +59,12 @@ const CategoryPage = () => {
 
     fetchPosts();
   }, [id])
+
+  useEffect(() => {
+    if (isModalOpen && contentRef.current) {
+      contentRef.current.focus();
+    }
+  }, [isModalOpen]);
 
   const handleSubmit = () => {
     if (title.trim() && content.trim()) {
@@ -93,6 +101,7 @@ const CategoryPage = () => {
     left: 1rem;
     cursor: pointer;
     z-index: 2;
+    pointer-events: ${({ isModalOpen }) => (isModalOpen ? "none" : "auto")};
   `
 
   const Bg = styled.div`
@@ -159,7 +168,7 @@ const CategoryPage = () => {
   
   return (
     <Wrap>
-      <Logo src={logo} alt="logo" onClick={() => navigate('/')} />
+      <Logo src={logo} alt="logo" onClick={() => navigate('/')} isModalOpen={isModalOpen} />
       <IndexList>
             {[0, 1, 2, 3].map((i) => (
                 <Index
@@ -227,7 +236,7 @@ const CategoryPage = () => {
 
       {/* ✅ 모달 */}
       {isModalOpen && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" key="modal" >
           <div className="modal-content">
           <button className="close-btn" onClick={() => setIsModalOpen(false)}>
             <img src={xIcon} alt="닫기" className="close-icon" />
@@ -263,13 +272,17 @@ const CategoryPage = () => {
                     }
                   }} />
 
-              <div className="modal-header-text">
+              <div className="modal-header-text" onClick={(e) => {
+                if (e.target.tagName !== "INPUT") {
+                titleRef.current?.focus()}}}>
                 <input
+                  ref={titleRef}
                   className="modal-title-input"
                   type="text"
                   placeholder="제목을 입력해주세요."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  onFocus={() => console.log("제목 input focused")}
                 />
 
                 <div className="modal-subinfo">
@@ -278,13 +291,17 @@ const CategoryPage = () => {
                 </div>
               </div>
             </div>
-
-            <textarea
-              className="modal-textarea no-border"
-              placeholder="내용을 입력하세요"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <div onClick={(e) => {
+                if (e.target.tagName !== "TEXTAREA") {
+                titleRef.current?.focus()}}}>
+              <textarea
+                ref={contentRef}
+                className="modal-textarea no-border"
+                placeholder="내용을 입력하세요"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
 
             <button className="submit-btn" onClick={handleSubmit}>등록하기</button>
           </div>
