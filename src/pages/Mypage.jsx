@@ -36,33 +36,13 @@ const Mypage = () => {
             setUserId(res.data.name);
         })
         .catch(err=> {
-            console.error("요청 실패", err);
+            console.error("이미지, 아이디 요청 실패", err);
             setUserImgURL(null);
             setUserId(null);
         })
 
-
-        axios.get(`/mypage/tip`)
-        .then(res => {
-            setScrap(res.data);
-        })
-        .catch(err=> {
-            console.error("요청 실패", err);
-            setScrap([]);
-        })
-
-        axios.get(`/mypage/post/list`)
-        .then(res => {
-            setTip(res.data);
-        })
-        .catch(err=> {
-            console.error("요청 실패", err);
-            setTip([]);
-        })
-        
+    
     }, [])
-
-
 
     useEffect(() => {
         axios.get(`/mypage/post/list`)
@@ -70,9 +50,19 @@ const Mypage = () => {
             setScrap(res.data);
         })
         .catch(err=> {
-            console.error("요청 실패", err);
+            console.error("스크랩 목록 요청 실패", err);
             setScrap([]);
         })
+
+
+        axios.get(`/mypage/tip`)
+        .then(res => {
+            setTip(res.data);
+        })
+        .catch(err=> {
+            console.error("작성한 글 요청 실패", err);
+            setTip([]);
+        })  
     }, [])
 
     const goToPreviousPage = () => {
@@ -440,9 +430,9 @@ const Mypage = () => {
                         </Li1>
                         <Li2>
                         {currentItems.length === 0 ? (
-  <p style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
-    {subTabIndex === 0 ? "작성한 글이 없습니다." : "저장한 글이 없습니다."}
-  </p>
+                        <p style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
+                            {subTabIndex === 0 ? "작성한 글이 없습니다." : "저장한 글이 없습니다."}
+                        </p>
                         ) : (
                         <>
                             <L2Ul key={subTabIndex === 0 ? "written" : "saved"}>
@@ -450,7 +440,7 @@ const Mypage = () => {
                                     <L2Li key={item.postId || idx}>
                                         <ContentRow>
                                             <IconWrap>
-                                            <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
+                                                <Icon src={subTabIndex === 0 ? item.image || pen_icon : bookmark_icon} alt="icon" />
                                             </IconWrap>
                                             <ContentText>
                                             <Title>
