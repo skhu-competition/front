@@ -9,15 +9,12 @@
 
 /* ✅ 상단 로고 고정 */
 .title {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  width: 130px;
-  height: auto;
-  z-index: 9999;
-  pointer-events: none;
-  user-select: none;
-  image-rendering: auto;
+  position: absolute;
+  width: 13rem; 
+  top: 3rem;
+  left: 1rem;
+  cursor: pointer;
+  z-index: 2;
 }
 
 /* ✅ 게시글 상세 페이지 영역 */
