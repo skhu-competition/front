@@ -99,3 +99,19 @@
   color: #444;
   white-space: pre-line;
 }
+
+/* ✅ X 버튼 */
+.close-detail-btn {
+  position: absolute;
+  top: 13rem;
+  right: 3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.close-icon {
+  width: 30px;
+  height: 30px;
+}

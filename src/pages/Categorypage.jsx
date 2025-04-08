@@ -31,14 +31,16 @@ const CategoryPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [posts, setPosts ] = useState([]);
-  const uploadImg = useRef(null);
+  const [posts, setPosts] = useState([]);
   const [preview, setPreview] = useState(null);
+
+  const uploadImg = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState("익명");
 
   const categoryCorrect = categoryMapping.find((item) => item.id === id);
-  
+
   useEffect(() => {
     if (id && !categoryCorrect) {
       navigate('/mainpagehoney', { replace: true });
@@ -46,43 +48,57 @@ const CategoryPage = () => {
   }, [id, categoryCorrect, navigate]);
 
   useEffect(() => {
-    if (!id || !categoryCorrect) return null;
-    
+    if (!id || !categoryCorrect) return;
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`/tip/categories/${id}`)
+        const response = await axios.get(`/tip/categories/${id}`);
         setPosts(response.data);
       } catch (err) {
         console.error("게시글 불러오기 실패", err);
       }
-    }
-
+    };
     fetchPosts();
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
-    if (isModalOpen && contentRef.current) {
-      contentRef.current.focus();
-    }
-  }, [isModalOpen]);
+    axios.get("/user/me")
+      .then(res => {
+        setCurrentUser(res.data.nickname);
+      })
+      .catch(err => {
+        console.error("유저 정보 불러오기 실패", err);
+      });
+  }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (title.trim() && content.trim()) {
-      const newPost = {
-        title,
-        content,
-        category: id,
-        date: new Date().toISOString().split("T")[0],
-      };
-      alert("글이 등록되었습니다! (임시)");
-      setIsModalOpen(false);
-      setTitle("");
-      setContent("");
+      try {
+        const formData = {
+          title,
+          content,
+          category: Number(id),
+          image: preview,
+          nickname: currentUser
+        };
+
+        await axios.post("/tip", formData);
+
+        alert("글이 등록되었습니다!");
+        setIsModalOpen(false);
+        setTitle("");
+        setContent("");
+        setPreview(null);
+
+        const response = await axios.get(`/tip/categories/${id}`);
+        setPosts(response.data);
+      } catch (err) {
+        alert("글 등록 실패");
+        console.error(err);
+      }
     }
   };
 
   const currentDate = new Date().toISOString().split("T")[0];
-  const currentUser = "전뚠뚠 누나";
 
   const Wrap = styled.div`
     width: 100%;
@@ -93,7 +109,7 @@ const CategoryPage = () => {
     justify-content: flex-end;
     align-items: flex-end;
   `
-  
+
   const Logo = styled.img`
     position: absolute;
     width: 13rem; 
@@ -165,24 +181,24 @@ const CategoryPage = () => {
     font-weight: bold;
     margin-top: 30px;
   `
-  
+
   return (
     <Wrap>
       <Logo src={logo} alt="logo" onClick={() => navigate('/')} isModalOpen={isModalOpen} />
       <IndexList>
-            {[0, 1, 2, 3].map((i) => (
-                <Index
-                    key={i}
-                    active={selectedIndex === i}
-                    onClick={() => {
-                        setSelectedIndex(i);
-                        navigate(routes[i]);
-                    }}
-                >
-                <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
-                </Index>
-            ))}
-        </IndexList>
+        {[0, 1, 2, 3].map((i) => (
+          <Index
+            key={i}
+            active={selectedIndex === i}
+            onClick={() => {
+              setSelectedIndex(i);
+              navigate(routes[i]);
+            }}
+          >
+            <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
+          </Index>
+        ))}
+      </IndexList>
 
       <div className="category-bg">
         <div className="category-header">
@@ -204,77 +220,53 @@ const CategoryPage = () => {
             </div>
           ) : (
             posts.map((post) => (
-              <li className="post-item" key={post.postId} onClick={() => {
-                navigate(`/post/${post.postId}`);
-              }}>
+              <li className="post-item" key={post.postId} onClick={() => navigate(`/post/${post.postId}`)}>
                 <div className="post-left">
                   <img src={post.image || paperIcon} className="post-img" alt="postImg" />
-                  <span className="post-title">{post.title}</span>
+                  <div className="post-texts">
+                    <span className="post-title">{post.title}</span>
+                    <p className="post-content">{post.content}</p>
+                  </div>
                 </div>
                 <div className="post-right">
-                  <p className="post-content">{post.content}</p>
                   <span className="post-username">박대경</span>
                   <span className="post-date">{post.createdAt?.split("T")[0]}</span>
                 </div>
               </li>
             ))
-            /* filteredPosts.map((post, index) => (
-              <li className="post-item" key={index}>
-                <div className="post-left">
-                  <img src={paperIcon} alt="paper" />
-                  <span className="post-title">{post.title}</span>
-                </div>
-                <div className="post-right">
-                  <p className="post-content">{post.content}</p>
-                  <span className="post-date">{post.date}</span>
-                </div>
-              </li>
-            )) */
           )}
         </ul>
       </div>
 
-      {/* ✅ 모달 */}
       {isModalOpen && (
-        <div className="modal-overlay" key="modal" >
+        <div className="modal-overlay">
           <div className="modal-content">
-          <button className="close-btn" onClick={() => setIsModalOpen(false)}>
-            <img src={xIcon} alt="닫기" className="close-icon" />
-          </button>
+            <button className="close-btn" onClick={() => setIsModalOpen(false)}>
+              <img src={xIcon} alt="닫기" className="close-icon" />
+            </button>
             <div className="modal-header">
               {preview ? (
-                <img 
-                  src={preview}
-                  alt="preview"
-                  className="modal-icon-small"
-                  onClick={() => uploadImg.current?.click()}/>
-                ) : (
-                <img 
-                  src={paperIcon}
-                  alt="paper"
-                  className="modal-icon-small"
-                  onClick={() => uploadImg.current?.click()}/>
-                )}
+                <img src={preview} alt="preview" className="modal-icon-small" onClick={() => uploadImg.current?.click()} />
+              ) : (
+                <img src={paperIcon} alt="paper" className="modal-icon-small" onClick={() => uploadImg.current?.click()} />
+              )}
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={uploadImg}
-                  style={{display: "none", width: "10%"}}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setPreview(reader.result)
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }} />
+              <input
+                type="file"
+                accept="image/*"
+                ref={uploadImg}
+                style={{ display: "none", width: "10%" }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setPreview(reader.result);
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              />
 
-              <div className="modal-header-text" onClick={(e) => {
-                if (e.target.tagName !== "INPUT") {
-                titleRef.current?.focus()}}}>
+              <div className="modal-header-text">
                 <input
                   ref={titleRef}
                   className="modal-title-input"
@@ -282,26 +274,21 @@ const CategoryPage = () => {
                   placeholder="제목을 입력해주세요."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  onFocus={() => console.log("제목 input focused")}
                 />
-
                 <div className="modal-subinfo">
                   아이디 : {currentUser}<br />
                   날짜 : {currentDate}
                 </div>
               </div>
             </div>
-            <div onClick={(e) => {
-                if (e.target.tagName !== "TEXTAREA") {
-                titleRef.current?.focus()}}}>
-              <textarea
-                ref={contentRef}
-                className="modal-textarea no-border"
-                placeholder="내용을 입력하세요"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-            </div>
+
+            <textarea
+              ref={contentRef}
+              className="modal-textarea no-border"
+              placeholder="내용을 입력하세요"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
 
             <button className="submit-btn" onClick={handleSubmit}>등록하기</button>
           </div>
