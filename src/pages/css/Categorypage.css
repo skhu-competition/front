@@ -89,48 +89,72 @@
   height: 18px;
 }
 
-.post-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 .post-item {
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 2rem 0;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.post-img {
+  max-height: 120px;
+  width: auto;
+  border-radius: 8px;
 }
 
 .post-left {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  align-items: center; 
+}
+
+.post-texts {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ⭐ center → flex-start */
+  gap: 0.2rem; /* ⭐ 간격 줄이기 */
 }
 
 .post-title {
-  font-weight: 500;
+  font-size: 2rem;
+  font-weight: 600;
   color: #333;
+  margin: 0; /* ⭐ 불필요한 간격 제거 */
 }
+
+.post-content {
+  font-size: 1.5rem;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50vw;
+  margin: 0; /* ⭐ 간격 없애기 */
+}
+
 
 .post-right {
   text-align: right;
   font-size: 14px;
   color: #666;
-  max-width: 50%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: flex-end;
+  margin-right: 3rem;
 }
 
-.post-content {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.post-username {
+  font-size: 1rem;
+  color: #888;
 }
 
 .post-date {
-  display: block;
-  font-size: 12px;
+  font-size: 0.8rem;
   color: #aaa;
 }
+
 
 .empty-box {
   width: 100%;
@@ -213,6 +237,7 @@
 .modal-icon-small {
   width: 10%;
   height: auto;
+  cursor: pointer;
 }
 
 .modal-header-text {

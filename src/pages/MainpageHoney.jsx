@@ -15,8 +15,11 @@ const MainPageHoney = () => {
   const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
   const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
+  //1=공부, 2=새내기, 3=기숙사
   const goToCategory = (category) => {
-    navigate(`/category/${category}`);
+    console.log(category);
+    console.log(typeof category);
+    ( category <= 3 && typeof category !== Number ) ? navigate(`/category/${category}`) : navigate(`/mainpagehoney`);
   };
 
   const Wrap = styled.div`
@@ -181,19 +184,19 @@ const MainPageHoney = () => {
         <Page1>
           <Intro>회대 꿀팁 카테고리 ▷</Intro>
           <Category1>
-            <FolderItem onClick={() => goToCategory("공부")}>
+            <FolderItem onClick={() => goToCategory(1)}>
               <FolderWrapper>
                 <FolderImg src={folder} alt="folder" />
                 <FolderLabel>| 공부</FolderLabel>
               </FolderWrapper>
             </FolderItem>
-            <FolderItem onClick={() => goToCategory("새내기")}>
+            <FolderItem onClick={() => goToCategory(2)}>
               <FolderWrapper>
                 <FolderImg src={folder} alt="folder" />
                 <FolderLabel>| 새내기</FolderLabel>
               </FolderWrapper>
             </FolderItem>
-            <FolderItem onClick={() => goToCategory("기숙사")}>
+            <FolderItem onClick={() => goToCategory(3)}>
               <FolderWrapper>
                 <FolderImg src={folder} alt="folder" />
                 <FolderLabel>| 기숙사</FolderLabel>
