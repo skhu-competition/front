@@ -56,7 +56,8 @@ const MainPageMap = () => {
           name: p.name,
           position: new naver.maps.LatLng(p.mapy, p.mapx),
           description: p.description,
-          address: p.address
+          address: p.address,
+          rating: p.averageRating
         }))
         setMarkerData(place);
       })
@@ -66,8 +67,9 @@ const MainPageMap = () => {
   }, [])
 
   const handleMarkerClick = useCallback((map, marker, place) => {
-    const { id, name, position, description, address } = place;
-
+    const { id, name, position, description, address, rating } = place;
+    const emtpystar = `<img src="${star_img}" alt="star" width="17px"/>`;
+    const star = `<img src="${star_img2}" alt="star" width="17px" />`;
     const wrapper = document.createElement("div");
     wrapper.className = "map-info-container";
     wrapper.innerHTML = `
@@ -79,7 +81,7 @@ const MainPageMap = () => {
             <button class="close-btn">✕</button>
           </div>
         </div>
-        <div class="info-rating"><span class="stars">★☆☆☆☆</span></div>
+        <div class="info-rating"><span class="stars">${star.repeat(rating)}${emtpystar.repeat(5-rating)}</span></div>
         <div class="info-address">${address}</div>
         <div class="info-extra">${description}</div>
       </div>
@@ -208,7 +210,7 @@ const MainPageMap = () => {
                         <Author>{review.userName}</Author>
                         <StarWrapper>
                           {Array(review.rating).fill(0).map((_, i) => (
-                            <Star key={i} src={star_img} alt="star" />
+                            <Star key={i} src={star_img2} alt="star" />
                           ))}
                         </StarWrapper>
                         <Description>{review.content}</Description>
