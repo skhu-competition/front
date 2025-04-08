@@ -37,8 +37,9 @@ const CategoryPage = () => {
   const uploadImg = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState("익명");
 
-  const categoryCorrect = categoryMapping.find(item => item.id === id);
+  const categoryCorrect = categoryMapping.find((item) => item.id === id);
 
   useEffect(() => {
     if (id && !categoryCorrect) navigate('/mainpagehoney', { replace: true });
@@ -96,13 +97,13 @@ const CategoryPage = () => {
       )}
 
       <IndexList>
-        {routes.map((route, i) => (
+        {[0, 1, 2, 3].map((i) => (
           <Index
             key={i}
             active={selectedIndex === i}
             onClick={() => {
               setSelectedIndex(i);
-              navigate(route);
+              navigate(routes[i]);
             }}
           >
             <IndexImage src={indexImages[i]} isSelected={selectedIndex === i} />
@@ -127,14 +128,17 @@ const CategoryPage = () => {
               </p>
             </div>
           ) : (
-            posts.map(post => (
-              <li key={post.postId} className="post-item" onClick={() => navigate(`/post/${post.postId}`)}>
+            posts.map((post) => (
+              <li className="post-item" key={post.postId} onClick={() => navigate(`/post/${post.postId}`)}>
                 <div className="post-left">
                   <img src={post.image || paperIcon} className="post-img" alt="postImg" />
-                  <span className="post-title">{post.title}</span>
+                  <div className="post-texts">
+                    <span className="post-title">{post.title}</span>
+                    <p className="post-content">{post.content}</p>
+                  </div>
                 </div>
                 <div className="post-right">
-                  <p className="post-content">{post.content}</p>
+                  {/* <p className="post-content">{post.content}</p> */}
                   <span className="post-username">{post.userName}</span>
                   <span className="post-date">{post.createdAt?.split("T")[0]}</span>
                 </div>
@@ -150,23 +154,20 @@ const CategoryPage = () => {
             <button className="close-btn" onClick={() => setIsModalOpen(false)}>
               <img src={xIcon} alt="닫기" className="close-icon" />
             </button>
-
             <div className="modal-header">
-              <img
-                src={preview || paperIcon}
-                alt="preview"
-                className="modal-icon-small"
-                onClick={() => uploadImg.current?.click()}
-              />
+              {preview ? (
+                <img src={preview} alt="preview" className="modal-icon-small" onClick={() => uploadImg.current?.click()} />
+              ) : (
+                <img src={paperIcon} alt="paper" className="modal-icon-small" onClick={() => uploadImg.current?.click()} />
+              )}
 
               <input
                 type="file"
                 accept="image/*"
                 ref={uploadImg}
-                style={{ display: "none" }}
-                onChange={e => {
+                style={{ display: "none", width: "10%" }}
+                onChange={(e) => {
                   const file = e.target.files?.[0];
-                  setImage(file);
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => setPreview(reader.result);
@@ -182,7 +183,7 @@ const CategoryPage = () => {
                   type="text"
                   placeholder="제목을 입력해주세요."
                   value={title}
-                  onChange={e => setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
                 <div className="modal-subinfo">
                   날짜 : {currentDate}
@@ -195,7 +196,7 @@ const CategoryPage = () => {
               className="modal-textarea no-border"
               placeholder="내용을 입력하세요"
               value={content}
-              onChange={e => setContent(e.target.value)}
+              onChange={(e) => setContent(e.target.value)}
             />
 
             <button className="submit-btn" onClick={handleSubmit}>등록하기</button>
