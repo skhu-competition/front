@@ -437,7 +437,7 @@ const Mypage = () => {
                         <>
                             <L2Ul key={subTabIndex === 0 ? "written" : "saved"}>
                                 {paginatedItems.map((item, idx) => (
-                                    <L2Li key={item.postId || idx}>
+                                    <L2Li key={item.postId || idx} onClick = {()=>{navigate(`post/${item.postId}`)}}>
                                         <ContentRow>
                                             <IconWrap>
                                                 <Icon src={subTabIndex === 0 ? item.image || pen_icon : bookmark_icon} alt="icon" />
@@ -460,7 +460,7 @@ const Mypage = () => {
                                             </Description>
                                             </ContentText>
                                         </ContentRow>
-                                        </L2Li>
+                                    </L2Li>
                                     ))}
                                     </L2Ul>
                                     <PaginationButtons>
