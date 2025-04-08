@@ -16,19 +16,15 @@ const Mypage = () => {
     const [subTabIndex, setSubTabIndex] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const itemsPerPage = 4;
-    const writtenItems = Array.from({ length: 0 });
-    const savedItems = Array.from({ length: 0 });
-    const currentItems = subTabIndex === 0 ? writtenItems : savedItems;
-
-    const startIdx = currentPage * itemsPerPage;
-    const paginatedItems = currentItems.slice(startIdx, startIdx + itemsPerPage);
-    const totalPages = Math.ceil(currentItems.length / itemsPerPage);
 
     const navigate = useNavigate();
     const location = useLocation();
 
     const [userImgURL, setUserImgURL] = useState(null);
+    const [userId, setUserId] = useState(null);
+
+    const [scrap, setScrap] = useState([]);
+    const [tip, setTip] = useState([]);
     useEffect(() => {
         setCurrentPage(0); 
     }, [subTabIndex]);
@@ -36,13 +32,49 @@ const Mypage = () => {
     useEffect(() => {
         axios.get(`/mypage/info`)
         .then(res => {
-            setUserImgURL(res.data.profileImage)
+            setUserImgURL(res.data.profileImage);
+            setUserId(res.data.name);
         })
         .catch(err=> {
             console.error("요청 실패", err);
             setUserImgURL(null);
+            setUserId(null);
+        })
+
+
+        axios.get(`/mypage/tip`)
+        .then(res => {
+            setScrap(res.data);
+        })
+        .catch(err=> {
+            console.error("요청 실패", err);
+            setScrap([]);
+        })
+
+        axios.get(`/mypage/post/list`)
+        .then(res => {
+            setTip(res.data);
+        })
+        .catch(err=> {
+            console.error("요청 실패", err);
+            setTip([]);
+        })
+        
+    }, [])
+
+
+
+    useEffect(() => {
+        axios.get(`/mypage/post/list`)
+        .then(res => {
+            setScrap(res.data);
+        })
+        .catch(err=> {
+            console.error("요청 실패", err);
+            setScrap([]);
         })
     }, [])
+
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 0));
     };
@@ -53,6 +85,16 @@ const Mypage = () => {
 
     const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage' ];
     const indexImages = [ map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon ];
+
+
+    const itemsPerPage = 4;
+    const writtenItems = tip;
+    const savedItems = scrap; 
+    const currentItems = subTabIndex === 0 ? writtenItems : savedItems;
+
+    const startIdx = currentPage * itemsPerPage;
+    const paginatedItems = currentItems.slice(startIdx, startIdx + itemsPerPage);
+    const totalPages = Math.ceil(currentItems.length / itemsPerPage);
 
     const Wrap = styled.div`
         width: 100%;
@@ -188,6 +230,7 @@ const Mypage = () => {
     
     
     const Profile = styled.img`
+        margin-top: -1rem;
         width: 45%;
         aspect-ratio: 1 / 1;
         object-fit: cover;
@@ -349,6 +392,13 @@ const Mypage = () => {
         align-self: center;
     `;
 
+    const Id = styled.p`
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #444;
+    `
+
+    
     
     return (
         <Wrap>
@@ -372,6 +422,7 @@ const Mypage = () => {
                     <Intro>마이페이지</Intro>
                     <MyUl>
                         <Li1>
+                            <Id>{userId ? userId : '달님이'}</Id>
                             <Profile src={userImgURL ? userImgURL : mypage_tap_icon} alt="profile" />
                             <Logout src={logout_icon} alt="logout" />
                             <L1BottomUL>
@@ -389,46 +440,52 @@ const Mypage = () => {
                         </Li1>
                         <Li2>
                         {currentItems.length === 0 ? (
-                            <p style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
-                            {subTabIndex === 0 ? "작성한 글이 없습니다." : "저장한 글이 없습니다."}
-                            </p>
+  <p style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
+    {subTabIndex === 0 ? "작성한 글이 없습니다." : "저장한 글이 없습니다."}
+  </p>
                         ) : (
-                            <>
+                        <>
                             <L2Ul key={subTabIndex === 0 ? "written" : "saved"}>
-                                {paginatedItems.map((_, idx) => (
-                                <L2Li key={idx}>
-                                    <ContentRow>
-                                    <IconWrap>
-                                        <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
-                                    </IconWrap>
-                                    <ContentText>
-                                        <Title>
-                                        {subTabIndex === 0
-                                            ? `내가 작성한 글 ${startIdx + idx + 1}`
-                                            : `내가 스크랩한 글 ${startIdx + idx + 1}`}
-                                        </Title>
-                                        <DateText>2024.04.04</DateText>
-                                        <Description>
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, deserunt deleniti...
-                                        </Description>
-                                    </ContentText>
-                                    </ContentRow>
-                                </L2Li>
-                                ))}
-                            </L2Ul>
-                            <PaginationButtons>
-                                <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>
-                                이전
-                                </PaginationBtn>
-                                <PageIndicator>
-                                {currentPage + 1} / {totalPages}
-                                </PageIndicator>
-                                <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
-                                다음
-                                </PaginationBtn>
-                            </PaginationButtons>
-                            </>
-                        )}
+                                {paginatedItems.map((item, idx) => (
+                                    <L2Li key={item.postId || idx}>
+                                        <ContentRow>
+                                            <IconWrap>
+                                            <Icon src={subTabIndex === 0 ? pen_icon : bookmark_icon} alt="icon" />
+                                            </IconWrap>
+                                            <ContentText>
+                                            <Title>
+                                                {item.title || (subTabIndex === 0 
+                                                ? `내가 작성한 글 ${startIdx + idx + 1}`
+                                                : `내가 스크랩한 글 ${startIdx + idx + 1}`)}
+                                            </Title>
+                                            <DateText>
+                                                {item.createdAt 
+                                                ? new Date(item.createdAt).toLocaleDateString("ko-KR")
+                                                : ""}
+                                            </DateText>
+                                            <Description>
+                                                {subTabIndex === 0 
+                                                ? item.content || "내용 없음"
+                                                : item.status || "내용 없음"}
+                                            </Description>
+                                            </ContentText>
+                                        </ContentRow>
+                                        </L2Li>
+                                    ))}
+                                    </L2Ul>
+                                    <PaginationButtons>
+                                    <PaginationBtn onClick={goToPreviousPage} disabled={currentPage === 0}>
+                                        이전
+                                    </PaginationBtn>
+                                    <PageIndicator>
+                                        {currentPage + 1} / {totalPages}
+                                    </PageIndicator>
+                                    <PaginationBtn onClick={goToNextPage} disabled={currentPage >= totalPages - 1}>
+                                        다음
+                                    </PaginationBtn>
+                                    </PaginationButtons>
+                                </>
+                            )}
                         </Li2>  
                     </MyUl>
                 </Page1>
