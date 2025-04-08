@@ -108,7 +108,13 @@
   gap: 1rem;
 }
 
+.post-img {
+  height: 120px;
+  width: auto;
+}
+
 .post-title {
+  font-size: 1.8rem;
   font-weight: 500;
   color: #333;
 }
@@ -124,11 +130,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 1.5rem;
+}
+
+.post-username {
+  font-size: 1rem;
 }
 
 .post-date {
   display: block;
-  font-size: 12px;
+  font-size: 0.8rem;
   color: #aaa;
 }
 
@@ -213,6 +224,7 @@
 .modal-icon-small {
   width: 10%;
   height: auto;
+  cursor: pointer;
 }
 
 .modal-header-text {

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import paperIcon from "../assets/paper-icon.png";
 import noPostIcon from "../assets/empty.png";
 import penIcon from "../assets/pen-icon.png";
@@ -12,6 +12,7 @@ import mypage_tap_icon from "../assets/mypage-tap-icon.png";
 import "./css/Categorypage.css";
 import styled from "styled-components";
 import axios from '../api/AxiosInstance';
+import { render } from "@testing-library/react";
 
 const categoryMapping = [
   { id: '1', category: '공부' },
@@ -31,22 +32,31 @@ const CategoryPage = () => {
   const [content, setContent] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [posts, setPosts ] = useState([]);
+  const uploadImg = useRef(null);
+  const [preview, setPreview] = useState(null);
 
   const categoryCorrect = categoryMapping.find((item) => item.id === id);
-
-  useEffect(() => {
-    axios.get(`/tip/categori`)
-  })
-
+  
   useEffect(() => {
     if (id && !categoryCorrect) {
       navigate('/mainpagehoney', { replace: true });
     }
   }, [id, categoryCorrect, navigate]);
 
-  if (!categoryCorrect) return null;
+  useEffect(() => {
+    if (!id || !categoryCorrect) return null;
+    
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`/tip/categories/${id}`)
+        setPosts(response.data);
+      } catch (err) {
+        console.error("게시글 불러오기 실패", err);
+      }
+    }
 
-  const filteredPosts = posts.filter((post) => post.category === id);
+    fetchPosts();
+  }, [id])
 
   const handleSubmit = () => {
     if (title.trim() && content.trim()) {
@@ -175,7 +185,7 @@ const CategoryPage = () => {
         </div>
 
         <ul className="post-list">
-          {filteredPosts.length === 0 ? (
+          {posts.length === 0 ? (
             <div className="empty-box">
               <img src={noPostIcon} alt="empty" className="empty-img" />
               <p className="empty-text">
@@ -184,7 +194,22 @@ const CategoryPage = () => {
               </p>
             </div>
           ) : (
-            filteredPosts.map((post, index) => (
+            posts.map((post) => (
+              <li className="post-item" key={post.postId} onClick={() => {
+                navigate(`/post/${post.postId}`);
+              }}>
+                <div className="post-left">
+                  <img src={post.image || paperIcon} className="post-img" alt="postImg" />
+                  <span className="post-title">{post.title}</span>
+                </div>
+                <div className="post-right">
+                  <p className="post-content">{post.content}</p>
+                  <span className="post-username">박대경</span>
+                  <span className="post-date">{post.createdAt?.split("T")[0]}</span>
+                </div>
+              </li>
+            ))
+            /* filteredPosts.map((post, index) => (
               <li className="post-item" key={index}>
                 <div className="post-left">
                   <img src={paperIcon} alt="paper" />
@@ -195,7 +220,7 @@ const CategoryPage = () => {
                   <span className="post-date">{post.date}</span>
                 </div>
               </li>
-            ))
+            )) */
           )}
         </ul>
       </div>
@@ -208,7 +233,36 @@ const CategoryPage = () => {
             <img src={xIcon} alt="닫기" className="close-icon" />
           </button>
             <div className="modal-header">
-              <img src={paperIcon} alt="paper" className="modal-icon-small" />
+              {preview ? (
+                <img 
+                  src={preview}
+                  alt="preview"
+                  className="modal-icon-small"
+                  onClick={() => uploadImg.current?.click()}/>
+                ) : (
+                <img 
+                  src={paperIcon}
+                  alt="paper"
+                  className="modal-icon-small"
+                  onClick={() => uploadImg.current?.click()}/>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={uploadImg}
+                  style={{display: "none", width: "10%"}}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setPreview(reader.result)
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+
               <div className="modal-header-text">
                 <input
                   className="modal-title-input"
