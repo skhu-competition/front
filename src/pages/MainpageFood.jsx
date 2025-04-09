@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -12,16 +12,15 @@ import food2 from "../assets/food2.png";
 import food3 from "../assets/food3.png";
 import food4 from "../assets/food4.png";
 import food5 from "../assets/food5.png";
+import axios from "../api/AxiosInstance";
 
 const foodData = [
-  { img: food1, name: "이천성모메존칼국수", rank: 1 },
-  { img: food2, name: "다원국수", rank: 2 },
-  { img: food3, name: "우가본", rank: 3 },
-  { img: food4, name: "본가 칡냉면", rank: 4 },
-  { img: food5, name: "수목원국수", rank: 5 },
+  { img: food1, name: "이천성모메존칼국수", rank: 1, placeId: 11 },
+  { img: food2, name: "다원국수", rank: 2, placeId: 2 },
+  { img: food3, name: "우가본", rank: 3, placeId: 9 },
+  { img: food4, name: "본가 칡냉면", rank: 4, placeId: 6 },
+  { img: food5, name: "수목원국수", rank: 5, placeId: 10 },
 ];
-
-
 
 const Wrap = styled.div`
   width: 100%;
@@ -217,6 +216,33 @@ const MainPageFood = () => {
   const navitage = useNavigate();
   const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
   const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
+  const [address, setAddress] = useState({});
+  const [rating, setRating] = useState({});
+
+  useEffect(() => {
+  const fetchData = async () => {
+    const addressMap = {};
+    const ratingMap = {};
+
+    await Promise.all(
+      foodData.map(async (food) => {
+        try {
+          const res = await axios.get(`/place/${food.placeId}`);
+          addressMap[food.placeId] = res.data.address;
+          ratingMap[food.placeId] = res.data.averageRating;
+        } catch (err) {
+          console.error("주소 요청 실패", err);
+          addressMap[food.placeId] = "주소 불러오기 실패";
+          ratingMap[food.placeId] = 0.0;
+        }
+      })
+    );
+    setAddress(addressMap);
+    setRating(ratingMap);
+  };
+
+  fetchData();
+}, []);
 
   return (
     <Wrap>
@@ -248,8 +274,8 @@ const MainPageFood = () => {
                     <Badge>Top{food.rank}</Badge>
                     <Name>{food.name}</Name>
                     <SubInfo>
-                      <div>📍 주소</div>
-                      <div>⭐ 4.0</div>
+                      <div>📍 {address[food.placeId] || "주소 불러오는 중..."}</div>
+                      <div>⭐ {rating[food.placeId] !== undefined ? rating[food.placeId].toFixed(1) : 0.0}</div>
                     </SubInfo>
                   </CardText>
                 </Category1List>
