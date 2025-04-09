@@ -229,6 +229,8 @@ const Logo = styled.img`
 `;
 
 const IndexList = styled.ul`
+  margin-top: 1.5rem;
+  display: flex;
   margin: 0;
   padding: 0;
   list-style: none;
