@@ -168,6 +168,7 @@ const CategoryPage = () => {
                 style={{ display: "none", width: "10%" }}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
+                  setImage(file);
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => setPreview(reader.result);
