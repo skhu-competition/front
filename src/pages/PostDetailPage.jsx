@@ -39,7 +39,7 @@ const PostDetailPage = () => {
           <div className="postdetail-header">
             <h2 className="postdetail-title">{postMessage.title}</h2>
             <div className="postdetail-subinfo">
-              내 아이디는 전뚠뚠 누나<br />
+              {postMessage.userName}<br />
               날짜 : {postMessage.createdAt?.split("T")[0]}
             </div>
           </div>
