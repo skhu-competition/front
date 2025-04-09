@@ -23,7 +23,7 @@ const { naver } = window;
 const MainPageMap = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const indexImages = [map_tap_icon, honey_tap_icon, food_tap_icon, mypage_tap_icon];
-  const routes = [ '/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
+  const routes = ['/mainpagemap', '/mainpagehoney', '/mainpagefood', '/mypage'];
 
   const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState('');
@@ -32,6 +32,7 @@ const MainPageMap = () => {
 
   const container = useRef(null);
   const mapRef = useRef(null);
+  const markerRefs = useRef({});
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,30 +47,31 @@ const MainPageMap = () => {
   const paginatedItems = reviewData.slice(startIdx, startIdx + itemsPerPage);
 
   const skhu_position = useMemo(() => new naver.maps.LatLng(37.487700, 126.825400), []);
+  const targetPlaceId = location.state?.placeId;
 
   useEffect(() => {
     axios.get(`/place`)
       .then((res) => {
-        const places = res.data.places;
-        const place = places.map(p => ({
+        const places = res.data.places.map(p => ({
           id: p.id,
           name: p.name,
           position: new naver.maps.LatLng(p.mapy, p.mapx),
           description: p.description,
           address: p.address,
           rating: p.averageRating
-        }))
-        setMarkerData(place);
+        }));
+        setMarkerData(places);
       })
       .catch((err) => {
         console.log("마커 데이터 오류", err);
-      })
-  }, [])
+      });
+  }, []);
 
   const handleMarkerClick = useCallback((map, marker, place) => {
     const { id, name, position, description, address, rating } = place;
     const emtpystar = `<img src="${star_img}" alt="star" width="17px"/>`;
     const star = `<img src="${star_img2}" alt="star" width="17px" />`;
+
     const wrapper = document.createElement("div");
     wrapper.className = "map-info-container";
     wrapper.innerHTML = `
@@ -81,7 +83,7 @@ const MainPageMap = () => {
             <button class="close-btn">✕</button>
           </div>
         </div>
-        <div class="info-rating"><span class="stars">${star.repeat(rating)}${emtpystar.repeat(5-rating)}</span></div>
+        <div class="info-rating"><span class="stars">${star.repeat(rating)}${emtpystar.repeat(5 - rating)}</span></div>
         <div class="info-address">${address}</div>
         <div class="info-extra">${description}</div>
       </div>
@@ -101,16 +103,13 @@ const MainPageMap = () => {
     setSelectedMarkerId(id);
     setSelectedPlace(name);
 
-    const closeBtn = wrapper.querySelector(".close-btn");
-    const reviewBtn = wrapper.querySelector(".post-review");
-
-    closeBtn?.addEventListener("click", () => {
+    wrapper.querySelector(".close-btn")?.addEventListener("click", () => {
       infowindow.close();
       setSelectedMarkerId(null);
       setReviewData([]);
     });
 
-    reviewBtn?.addEventListener("click", () => {
+    wrapper.querySelector(".post-review")?.addEventListener("click", () => {
       setShowReviewPopup(true);
       infowindow.close();
     });
@@ -151,6 +150,8 @@ const MainPageMap = () => {
         map,
       });
 
+      markerRefs.current[place.id] = marker;
+
       naver.maps.Event.addListener(marker, "click", () => {
         handleMarkerClick(map, marker, place);
       });
@@ -162,8 +163,33 @@ const MainPageMap = () => {
     });
   }, [markerData, skhu_position, handleMarkerClick]);
 
+  useEffect(() => {
+    if (!targetPlaceId || !mapRef.current || markerData.length === 0) return;
+    const place = markerData.find(p => p.id === targetPlaceId);
+    const marker = markerRefs.current[targetPlaceId];
+    if (place && marker) {
+      handleMarkerClick(mapRef.current, marker, place);
+      mapRef.current.setCenter(place.position);
+    }
+  }, [targetPlaceId, markerData, handleMarkerClick]);
+
   const goToPreviousPage = () => setCurrentPage(prev => Math.max(prev - 1, 0));
   const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1));
+
+  useEffect(() => {
+    if (!targetPlaceId || !mapRef.current || markerData.length === 0) return;
+
+    const place = markerData.find(p => p.id === Number(targetPlaceId));
+    const marker = markerRefs.current[targetPlaceId];
+
+    if (place && marker) {
+      handleMarkerClick(mapRef.current, marker, place);
+      mapRef.current.setCenter(place.position);
+      
+      window.history.replaceState({}, document.title);
+    }
+  }, [targetPlaceId, markerData, handleMarkerClick]);
+
 
   return (
     <Wrap>
@@ -218,9 +244,7 @@ const MainPageMap = () => {
                     </ContentRow>
                   ))
                 ) : (
-                  <EmptyState>
-                    <p>아직 작성된 리뷰가 없습니다.</p>
-                  </EmptyState>
+                  <EmptyState><p>아직 작성된 리뷰가 없습니다.</p></EmptyState>
                 )}
 
                 <PaginationButtons>
@@ -254,8 +278,6 @@ const MainPageMap = () => {
             <PopupActions>
               <button onClick={() => setShowReviewPopup(false)}>취소</button>
               <button onClick={() => {
-                console.log(`${selectedPlace} 리뷰: ${reviewText}, 별점: ${rating}`);
-                
                 if (!reviewText.trim() || rating === 0) {
                   alert("리뷰 내용과 별점을 모두 입력해주세요.");
                   return;
@@ -264,20 +286,17 @@ const MainPageMap = () => {
                 axios.post(`/place/${selectedMarkerId}/review`, {
                   content: reviewText,
                   rating: rating
-                })
-                .then(() => {
+                }).then(() => {
                   alert("리뷰가 등록되었습니다!");
                   setShowReviewPopup(false);
                   setReviewText('');
                   setRating(0);
-                })
-                .catch((e) => {
-                  console.log("에러", e);
-                  alert("이미 리뷰를 등록한 장소입니다.")
+                }).catch((e) => {
+                  alert("이미 리뷰를 등록한 장소입니다.");
                   setShowReviewPopup(false);
                   setReviewText('');
                   setRating(0);
-                })
+                });
               }}>제출</button>
             </PopupActions>
           </PopupBox>
