@@ -40,8 +40,6 @@ const Mypage = () => {
             setUserImgURL(null);
             setUserId(null);
         })
-
-    
     }, [])
 
     useEffect(() => {
@@ -54,7 +52,6 @@ const Mypage = () => {
             setScrap([]);
         })
 
-
         axios.get(`/mypage/tip`)
         .then(res => {
             setTip(res.data);
@@ -64,6 +61,19 @@ const Mypage = () => {
             setTip([]);
         })  
     }, [])
+
+    const logoutHandle = () => {
+        axios.delete(`/logOut`)
+        .then(() => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            console.log("로그아웃 성공");
+            navigate("/");
+        })
+        .catch(err=> {
+            console.log("로그아웃 에러", err);
+        })
+    }
 
     const goToPreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 0));
@@ -414,7 +424,7 @@ const Mypage = () => {
                         <Li1>
                             <Id>{userId ? userId : '달님이'}</Id>
                             <Profile src={userImgURL ? userImgURL : mypage_tap_icon} alt="profile" />
-                            <Logout src={logout_icon} alt="logout" />
+                            <Logout src={logout_icon} alt="logout" onClick={logoutHandle}/>
                             <L1BottomUL>
                                 <BottonLi onClick={() => setSubTabIndex(0)}>
                                     <BottonIcon src={pen_icon} alt="pen" />
