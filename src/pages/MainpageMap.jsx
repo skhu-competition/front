@@ -271,6 +271,13 @@ const MainPageMap = () => {
                   setReviewText('');
                   setRating(0);
                 })
+                .catch((e) => {
+                  console.log("에러", e);
+                  alert("이미 리뷰를 등록한 장소입니다.")
+                  setShowReviewPopup(false);
+                  setReviewText('');
+                  setRating(0);
+                })
               }}>제출</button>
             </PopupActions>
           </PopupBox>
