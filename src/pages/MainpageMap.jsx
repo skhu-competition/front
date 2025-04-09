@@ -135,7 +135,7 @@ const MainPageMap = () => {
 
     const map = new naver.maps.Map(container.current, {
       center: skhu_position,
-      zoom: 17,
+      zoom: 16,
       zoomControl: true,
       zoomControlOptions: {
         style: naver.maps.ZoomControlStyle.SMALL,
