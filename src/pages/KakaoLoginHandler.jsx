@@ -34,7 +34,7 @@ const KakaoLoginHandler = () => {
       const { accessToken, refreshToken } = res.data;
       localStorage.setItem("access_token", accessToken);
       localStorage.setItem("refresh_token", refreshToken);
-      navigate("/mainpagemap", { replace: true });
+      navigate("/mypage", { replace: true });
     })
     .catch((err) => {
       console.error("카카오 로그인 실패:", err.response?.data || err.message);

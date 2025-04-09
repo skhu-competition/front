@@ -79,56 +79,82 @@
   border-radius: 10px;
   cursor: pointer;
   margin-right: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.post-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.write-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .post-item {
   display: flex;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 2rem 0;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.post-img {
+  max-height: 120px;
+  width: auto;
+  border-radius: 8px;
 }
 
 .post-left {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  align-items: center; 
+}
+
+.post-texts {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ⭐ center → flex-start */
+  gap: 0.2rem; /* ⭐ 간격 줄이기 */
 }
 
 .post-title {
-  font-weight: 500;
+  font-size: 2rem;
+  font-weight: 600;
   color: #333;
+  margin: 0; /* ⭐ 불필요한 간격 제거 */
 }
+
+.post-content {
+  font-size: 1.5rem;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50vw;
+  margin: 0; /* ⭐ 간격 없애기 */
+}
+
 
 .post-right {
   text-align: right;
   font-size: 14px;
   color: #666;
-  max-width: 50%;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: flex-end;
+  margin-right: 3rem;
 }
 
-.post-content {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.post-username {
+  font-size: 1rem;
+  color: #888;
 }
 
 .post-date {
-  display: block;
-  font-size: 12px;
+  font-size: 0.8rem;
   color: #aaa;
 }
 
-.empty {
-  color: #777;
-  font-size: 16px;
-  margin-top: 2rem;
-}
 
 .empty-box {
   width: 100%;
@@ -149,7 +175,7 @@
   color: #666;
 }
 
-/* ✅ 모달 전체 배경 */
+/* 모달 전체 배경 */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -163,53 +189,71 @@
   align-items: center;
 }
 
-/* ✅ 모달 안 박스 */
+/* 모달 내부 */
 .modal-content {
   background-color: white;
   width: 80rem;
   max-width: 80%;
   height: 40rem;
   padding: 2.5rem;
+  padding-bottom: 4rem;
   border-radius: 1.5rem;
   position: relative;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
-/* 닫기 버튼 */
+.modal-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* 닫기 아이콘 버튼 */
 .close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 2rem;
+  right: 2.3rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 닫기 아이콘 이미지 스타일 */
+.close-icon {
+  width: 25px;
+  height: 25px;
+}
+
+
+/* 모달 타이틀 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-icon-small {
+  width: 10%;
+  height: auto;
   cursor: pointer;
 }
 
-.modal-title {
-  font-size: 20px;
-  font-weight: bold;
+.modal-header-text {
   display: flex;
-  align-items: center;
-  gap: 1rem; /* 이미지와 글자 사이 여백 */
-  margin: 1rem 0;
+  flex-direction: column;
+  justify-content: center;
 }
-
-.modal-icon-inline {
-  width: 35px;
-  height: auto;
-}
-
 
 .modal-title-input {
   font-size: 1.5rem;
   font-weight: bold;
   border: none;
   outline: none;
-  margin-left: 0;
   background: none;
   width: 100%;
-  color: hwb(#777);
+  color: #777;
   margin-top: 1rem;
 }
 
@@ -218,22 +262,26 @@
   font-weight: normal;
 }
 
+.modal-subinfo {
+  font-size: 15px;
+  color: #888;
+  margin-top: 0.4rem;
+  line-height: 1.4;
+}
 
-/* ✅ 내용 textarea 높이 늘리기 + 간격 추가 */
 .modal-textarea {
-  width: 100%;
-  height: 250px; /* ⬅️ 기존보다 더 길게 */
+  width: 97.5%;
+  height: 250px;
   padding: 0.8rem;
   font-size: 1rem;
   border-radius: 0.5rem;
   border: none;
   resize: none;
-  margin-top: 2rem; /* ⬅️ 날짜 아래 간격 */
-  margin-bottom: 2.5rem; /* ⬅️ 버튼 간격도 넉넉하게 */
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
   background-color: #f9f9f9;
 }
 
-/* ✅ 등록하기 버튼 더 아래로 */
 .submit-btn {
   background-color: #7da2d8;
   color: white;
@@ -243,42 +291,5 @@
   font-weight: bold;
   cursor: pointer;
   display: block;
-}
-
-
-/* 아이콘 + 제목 + 작성자 영역 (가로 정렬) */
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-/* 종이 아이콘 */
-.modal-icon-small {
-  width: 60px;
-  height: auto;
-}
-
-/* 제목과 아이디/날짜 묶음 */
-.modal-header-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* 연한 제목 텍스트 */
-.modal-title-text {
-  font-size: 25px;
-  color: #333;
-  font-weight: bold;
-  margin: 0;
-}
-
-/* 아이디 + 날짜 텍스트 */
-.modal-subinfo {
-  font-size: 14px;
-  color: #888;
-  margin-top: 0.4rem;
-  line-height: 1.4;
+  margin-left: auto;
 }

@@ -1,63 +1,58 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import paperIcon from "../assets/paper-icon.png";
-import scrapIcon from "../assets/star-img.png";
+import bookmarkOutline from "../assets/bookmark-outline.png";
+import bookmarkFilled from "../assets/bookmark-filled.png";
+import xIcon from "../assets/x-icon.png"; // ❗ x 아이콘 import 추가
 import "./css/PostDetailPage.css";
+import axios from "../api/AxiosInstance";
 
 const PostDetailPage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
+  const [isScrapped, setIsScrapped] = useState(false);
+  const [postMessage, setPostMessage] = useState([]);
 
-  const [postMessage] = useState([
-    {
-      id: 1,
-      title: "국수나무 jmt 메뉴 추천해드림",
-      content: "이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요이곳에 내용을 적으세요 이렇게 적으세요 내용을 적으세요 이곳에 내용을 적으세요 이렇게 적으세요",
-      category: "공부",
-      date: "2025-04-03"
-    }
-  ]); // 임시 데이터
+  useEffect(() => {
+    axios.get(`/tip/${id}`)
+      .then((res) => {
+        setPostMessage(res.data);
+      })
+      .catch((err) => console.log("post 불러오기 실패", err));
+  }, [id]);
 
-  const currentPost = postMessage.find(post => post.id === parseInt(id));
-
-  const handleScrap = () => {
-    const scrapList = JSON.parse(localStorage.getItem("scraps")) || [];
-    const alreadyScrapped = scrapList.find(post => post.id === currentPost.id);
-    if (!alreadyScrapped) {
-      scrapList.push(currentPost);
-      localStorage.setItem("scraps", JSON.stringify(scrapList));
-      alert("스크랩 완료!");
-    } else {
-      alert("이미 스크랩된 글입니다.");
-    }
-  };
-
-  if (!currentPost) return <p>해당 글을 찾을 수 없습니다.</p>;
+  if (!postMessage) return <p>해당 글을 찾을 수 없습니다.</p>;
 
   return (
     <div className="wrap">
-      {/* 상단 로고 */}
-      <img src={logo} alt="logo" className="title" />
+      {/* ✅ X 버튼 추가 */}
+      <button className="close-detail-btn" onClick={() => navigate(-1)}>
+        <img src={xIcon} alt="닫기" className="close-icon" />
+      </button>
 
-      {/* ✅ 상세 게시글 */}
+      <img src={logo} alt="logo" className="title" onClick={() => navigate('/')} />
+
       <div className="postdetail-bg">
         <div className="postdetail-top">
-          <img src={paperIcon} alt="paper" className="postdetail-icon" />
+          <img src={postMessage.image || paperIcon} alt="paper" className="postdetail-icon" />
           <div className="postdetail-header">
-            <h2 className="postdetail-title">{currentPost.title}</h2>
+            <h2 className="postdetail-title">{postMessage.title}</h2>
             <div className="postdetail-subinfo">
-              내 아이디는 전뚠뚠 누나<br />
-              날짜 : {currentPost.date}
+              {postMessage.userName}<br />
+              날짜 : {postMessage.createdAt?.split("T")[0]}
             </div>
           </div>
-          <div className="scrap-btn" onClick={handleScrap}>
-            <img src={scrapIcon} alt="scrap" />
+
+          {/* ⭐ 스크랩 버튼 (비활성화됨) */}
+          {/* <div className="scrap-btn" onClick={handleScrap}>
+            <img src={isScrapped ? bookmarkFilled : bookmarkOutline} alt="스크랩" />
             <span>스크랩하기</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="postdetail-content">
-          {currentPost.content}
+          {postMessage.content}
         </div>
       </div>
     </div>

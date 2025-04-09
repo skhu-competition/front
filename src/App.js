@@ -14,6 +14,7 @@ import './App.css';
 import KakaoLoginHandler from './pages/KakaoLoginHandler';
 import GoogleLoginHandler from './pages/GoogleLoginHandler';
 
+
 function App() {
 
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ function App() {
     const token = localStorage.getItem("access_token");
 
     if (location.pathname === "/" && token) {
-      navigate("/mainpagemap", { replace: true });
+      navigate("/mypage", { replace: true });
     }
   }, [navigate, location.pathname]);
 
@@ -46,7 +47,7 @@ function App() {
         <Route path="/mainpagefood" element={<MainPageFood />} />
         <Route path="/mainpagemap" element={<MainPageMap />} />
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/category/:name" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
+        <Route path="/category/:id" element={<CategoryPage posts={postMessage} />} /> {/* 카테고리 연결 */}
         <Route path="/post/:id" element={<PostDetailPage />} /> {/* 글 상세페이지 */}
         <Route path="/oauth/kakao" element={<KakaoLoginHandler />} />
         <Route path="/oauth/google" element={<GoogleLoginHandler />} />
