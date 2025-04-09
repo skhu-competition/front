@@ -1,4 +1,3 @@
-// MainPageMap.jsx
 import "./css/Mainpage-map.css";
 import logo from "../assets/logo.png";
 import food_tap_icon from "../assets/food-tap-icon.png";
@@ -36,6 +35,7 @@ const MainPageMap = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [markerData, setMarkerData] = useState([]);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [reviewData, setReviewData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -47,26 +47,29 @@ const MainPageMap = () => {
 
   const skhu_position = useMemo(() => new naver.maps.LatLng(37.487700, 126.825400), []);
 
-  const markerData = useMemo(() => [
-    {
-      id: 1,
-      name: "다원국수",
-      position: new naver.maps.LatLng(37.489306, 126.825079),
-      description: "국수 맛집.",
-      address: "서울 구로구 경인로 22",
-    },
-    {
-      id: 2,
-      name: "국수나무",
-      position: new naver.maps.LatLng(37.488197, 126.825349),
-      description: "밥먹기 무난무난",
-      address: "서울 구로구 연동로 320",
-    },
-  ], []);
+  useEffect(() => {
+    axios.get(`/place`)
+      .then((res) => {
+        const places = res.data.places;
+        const place = places.map(p => ({
+          id: p.id,
+          name: p.name,
+          position: new naver.maps.LatLng(p.mapy, p.mapx),
+          description: p.description,
+          address: p.address,
+          rating: p.averageRating
+        }))
+        setMarkerData(place);
+      })
+      .catch((err) => {
+        console.log("마커 데이터 오류", err);
+      })
+  }, [])
 
   const handleMarkerClick = useCallback((map, marker, place) => {
-    const { id, name, position, description, address } = place;
-
+    const { id, name, position, description, address, rating } = place;
+    const emtpystar = `<img src="${star_img}" alt="star" width="17px"/>`;
+    const star = `<img src="${star_img2}" alt="star" width="17px" />`;
     const wrapper = document.createElement("div");
     wrapper.className = "map-info-container";
     wrapper.innerHTML = `
@@ -78,7 +81,7 @@ const MainPageMap = () => {
             <button class="close-btn">✕</button>
           </div>
         </div>
-        <div class="info-rating"><span class="stars">★☆☆☆☆</span></div>
+        <div class="info-rating"><span class="stars">${star.repeat(rating)}${emtpystar.repeat(5-rating)}</span></div>
         <div class="info-address">${address}</div>
         <div class="info-extra">${description}</div>
       </div>
@@ -207,7 +210,7 @@ const MainPageMap = () => {
                         <Author>{review.userName}</Author>
                         <StarWrapper>
                           {Array(review.rating).fill(0).map((_, i) => (
-                            <Star key={i} src={star_img} alt="star" />
+                            <Star key={i} src={star_img2} alt="star" />
                           ))}
                         </StarWrapper>
                         <Description>{review.content}</Description>
@@ -264,6 +267,13 @@ const MainPageMap = () => {
                 })
                 .then(() => {
                   alert("리뷰가 등록되었습니다!");
+                  setShowReviewPopup(false);
+                  setReviewText('');
+                  setRating(0);
+                })
+                .catch((e) => {
+                  console.log("에러", e);
+                  alert("이미 리뷰를 등록한 장소입니다.")
                   setShowReviewPopup(false);
                   setReviewText('');
                   setRating(0);

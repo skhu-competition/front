@@ -19,7 +19,6 @@
 }
 
 .info-actions {
-    display: flex;
     gap: 6px;
     align-items: center;
 }
@@ -49,6 +48,8 @@
     background: none;
     font-size: 18px;
     cursor: pointer;
+    margin-right: -15px;
+    margin-top: -15px;
 }
 
 .info-rating {
