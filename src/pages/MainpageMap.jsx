@@ -291,6 +291,14 @@ const MainPageMap = () => {
                   setShowReviewPopup(false);
                   setReviewText('');
                   setRating(0);
+                  axios.get(`/place/${selectedMarkerId}/review`)
+                  .then(res => {
+                    setReviewData(res.data.reviews);
+                    setTotalPages(Math.ceil(res.data.reviews.length / itemsPerPage));
+                    setCurrentPage(0); // 첫 페이지로 초기화
+                  }).catch(err => {
+                    console.error("리뷰 새로고침 실패", err);
+                  });
                 }).catch((e) => {
                   alert("이미 리뷰를 등록한 장소입니다.");
                   setShowReviewPopup(false);

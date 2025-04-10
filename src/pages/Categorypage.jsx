@@ -84,6 +84,9 @@ const CategoryPage = () => {
       image: fileUrl,
     });
 
+  const res = await axios.get(`/tip/categories/${id}`);
+  setPosts(res.data); 
+
     alert("글이 등록되었습니다!");
     setIsModalOpen(false);
     setTitle("");
@@ -99,7 +102,7 @@ const CategoryPage = () => {
 };
 
   const currentDate = new Date().toISOString().split("T")[0];
-  // const currentUser = "전뚠뚠 누나";
+  
 
   return (
     <Wrap>
