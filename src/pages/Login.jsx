@@ -52,8 +52,8 @@ const LoginButton = styled.img`
 
 const Login = () => {
   const kakaoLoginClick = () => {
-    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=https://nowskhu.zapto.org/auth/kakao&response_type=code`;
-    // const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=http://localhost:3000/oauth/kakao&response_type=code`;
+    // const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=https://nowskhu.zapto.org/auth/kakao&response_type=code`;
+    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=http://localhost:3000/oauth/kakao&response_type=code`;
     window.location.href = kakaoLoginUrl;
   };
   const googleLoginClick = () => {
