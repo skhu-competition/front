@@ -166,6 +166,9 @@ const Category1List = styled.li`
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
+  &:hover{
+    cursor: pointer;
+  }
 
   &:hover {
     transform: translateY(-5px) scale(1.02);
