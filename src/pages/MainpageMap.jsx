@@ -15,7 +15,7 @@ import {
   Intro, MapContainer, ReviewList, ContentRow, ContentText,
   Title, Star, Description, Author, StarWrapper, PaginationButtons,
   PaginationBtn, EmptyState, PopupBackground, PopupBox, PopupTextarea,
-  PopupActions, StarRating
+  PopupActions, StarRating, DeleteButton
 } from "./css/MainPageMap.styles";
 
 const { naver } = window;
@@ -241,6 +241,8 @@ const MainPageMap = () => {
                         </StarWrapper>
                         <Description>{review.content}</Description>
                       </ContentText>
+
+                      <DeleteButton>삭제</DeleteButton>
                     </ContentRow>
                   ))
                 ) : (

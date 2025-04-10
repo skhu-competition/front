@@ -117,13 +117,14 @@ export const ReviewList = styled.div`
 `;
 
 export const ContentRow = styled.div`
-  margin-left: 3rem;
   display: flex;
-  align-items: flex-start;
+  align-items: center;  
+  justify-content: space-between;
   gap: 1rem;
   width: 100%;
   max-width: 100%;
-  overflow: hidden; 
+  overflow: hidden;
+  padding: 10px 0; 
 `;
 
 export const ContentText = styled.div`
@@ -132,6 +133,7 @@ export const ContentText = styled.div`
   flex-direction: column;
   gap: 0.25rem;
   overflow: hidden;
+  margin-left: 3rem;
 `;
 
 export const Title = styled.p`
@@ -258,5 +260,27 @@ export const StarRating = styled.div`
     width: 1.5rem;
     height: 1.5rem;
     cursor: pointer;
+  }
+`;
+
+
+
+
+export const DeleteButton = styled.button`
+  margin-right: 2rem;
+  background: none;
+  border: 1px solid red;
+  color: red;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  height: 30px;  
+  white-space: nowrap;
+
+  &:hover {
+    background-color: red;
+    color: white;
   }
 `;
