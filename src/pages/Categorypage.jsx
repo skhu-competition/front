@@ -84,8 +84,8 @@ const CategoryPage = () => {
       image: fileUrl,
     });
 
-  const res = await axios.get(`/tip/categories/${id}`);
-  setPosts(res.data); 
+    const res = await axios.get(`/tip/categories/${id}`);
+    setPosts(res.data); 
 
     alert("글이 등록되었습니다!");
     setIsModalOpen(false);

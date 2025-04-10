@@ -13,9 +13,13 @@ const PostDetailPage = () => {
   const [postMessage, setPostMessage] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const loginUserName = "한시연";
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
+    axios.get(`/getuserinfo`)
+    .then((res) => setUserInfo(res.data))
+    .catch((err) => console.log("유저 정보 불러오기 실패", err));
+
     axios.get(`/tip/${id}`)
       .then((res) => setPostMessage(res.data))
       .catch((err) => console.log("post 불러오기 실패", err));
@@ -113,7 +117,7 @@ const PostDetailPage = () => {
           </div>
         </div>
 
-        {postMessage.userName === loginUserName && (
+        {postMessage.userId === userInfo.userId && (
           <div className="postdetail-btns">
             <button className="delete-btn" onClick={handleDelete}>삭제</button>
           </div>
