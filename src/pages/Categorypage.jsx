@@ -52,38 +52,49 @@ const CategoryPage = () => {
       .catch(err => console.error("게시글 불러오기 실패", err));
   }, [id, categoryCorrect]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+  if (!title.trim() || !content.trim()) return;
+
   const formData = new FormData();
-  formData.append('image', image);
 
-  if (title.trim() && content.trim()) {
-    axios.post('/file/upload', formData, {
+  try {
+    let fileToSend = image;
+
+    if (!image) {
+      // 기본 이미지 fetch 후 Blob 생성
+      const response = await fetch(paperIcon);
+      const blob = await response.blob();
+      fileToSend = new File([blob], "default.png", { type: blob.type });
+    }
+
+    formData.append("image", fileToSend);
+
+    const uploadRes = await axios.post('/file/upload', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    .then((res) => {
-      const fileUrl = res.data.fileUrl;
-
-      return axios.post('/tip', {
-        categoryId: id,
-        title: title,
-        content: content,
-        image: fileUrl
-      });
-    })
-    .then(() => {
-      alert("글이 등록되었습니다!");
-      setIsModalOpen(false);
-      setTitle("");
-      setContent("");
-    })
-    .catch((err) => {
-      console.log("게시글 전송 실패", err);
-      setIsModalOpen(false);
-      setTitle("");
-      setContent("");
+        'Content-Type': 'multipart/form-data',
+      },
     });
+
+    const fileUrl = uploadRes.data.fileUrl;
+
+    await axios.post('/tip', {
+      categoryId: id,
+      title,
+      content,
+      image: fileUrl,
+    });
+
+    alert("글이 등록되었습니다!");
+    setIsModalOpen(false);
+    setTitle("");
+    setContent("");
+    setImage(null);
+    setPreview(null);
+  } catch (err) {
+    console.log("게시글 전송 실패", err);
+    setIsModalOpen(false);
+    setTitle("");
+    setContent("");
   }
 };
 

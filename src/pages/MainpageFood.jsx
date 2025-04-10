@@ -220,29 +220,29 @@ const MainPageFood = () => {
   const [rating, setRating] = useState({});
 
   useEffect(() => {
-  const fetchData = async () => {
-    const addressMap = {};
-    const ratingMap = {};
+    const fetchData = async () => {
+      const addressMap = {};
+      const ratingMap = {};
 
-    await Promise.all(
-      foodData.map(async (food) => {
-        try {
-          const res = await axios.get(`/place/${food.placeId}`);
-          addressMap[food.placeId] = res.data.address;
-          ratingMap[food.placeId] = res.data.averageRating;
-        } catch (err) {
-          console.error("주소 요청 실패", err);
-          addressMap[food.placeId] = "주소 불러오기 실패";
-          ratingMap[food.placeId] = 0.0;
-        }
-      })
-    );
-    setAddress(addressMap);
-    setRating(ratingMap);
-  };
+      await Promise.all(
+        foodData.map(async (food) => {
+          try {
+            const res = await axios.get(`/place/${food.placeId}`);
+            addressMap[food.placeId] = res.data.address;
+            ratingMap[food.placeId] = res.data.averageRating;
+          } catch (err) {
+            console.error("주소 요청 실패", err);
+            addressMap[food.placeId] = "주소 불러오기 실패";
+            ratingMap[food.placeId] = 0.0;
+          }
+        })
+      );
+      setAddress(addressMap);
+      setRating(ratingMap);
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   return (
     <Wrap>
@@ -268,7 +268,7 @@ const MainPageFood = () => {
           <Category1Wrapper>
             <Category1>
               {foodData.map((food, idx) => (
-                <Category1List key={idx}>
+                <Category1List key={idx} onClick={() => navitage("/mainpagemap", { state: { placeId: food.placeId } })}>
                   <img src={food.img} alt={`food${food.rank}`} />
                   <CardText>
                     <Badge>Top{food.rank}</Badge>
