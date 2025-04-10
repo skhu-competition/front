@@ -134,3 +134,49 @@
   background-color: #f44336;
   color: white;
 }
+
+.comment-section {
+  margin-top: 30px;
+}
+
+.comment-item {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.comment-input-wrap {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-input-wrap textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  resize: none;
+}
+
+.comment-input-wrap button {
+  align-self: flex-end;
+  padding: 8px 16px;
+  background-color: #7da2d8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.comment-input-wrap button:hover {
+  background-color: #6c91c7;
+}
+
+.comment-input-wrap button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}

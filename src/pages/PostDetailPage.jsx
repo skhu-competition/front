@@ -1,38 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo.png";
 import paperIcon from "../assets/paper-icon.png";
-import bookmarkOutline from "../assets/bookmark-outline.png";
-import bookmarkFilled from "../assets/bookmark-filled.png";
 import xIcon from "../assets/x-icon.png";
-import "./css/PostDetailPage.css";
 import axios from "../api/AxiosInstance";
-import { useLocation } from 'react-router-dom';
+import "./css/PostDetailPage.css";
 
 const PostDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [isScrapped, setIsScrapped] = useState(false);
-  const [postMessage, setPostMessage] = useState(null);
-  const location = useLocation();
-  const category = location.state?.category;
 
- 
+  const [postMessage, setPostMessage] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const loginUserName = "한시연";
 
   useEffect(() => {
     axios.get(`/tip/${id}`)
-      .then((res) => {
-        setPostMessage(res.data);
-      })
+      .then((res) => setPostMessage(res.data))
       .catch((err) => console.log("post 불러오기 실패", err));
+
+    fetchComments();  
   }, [id]);
+
+  const fetchComments = () => {
+    axios.get(`/tip/${id}/comment`)
+      .then((res) => setComments(res.data))
+      .catch((err) => console.log("댓글 불러오기 실패", err));
+  };
 
   const handleDelete = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       axios.delete(`/tip/${id}`)
         .then(() => {
           alert("삭제가 완료되었습니다.");
-          navigate(-1);  
+          navigate(-1);
         })
         .catch((err) => {
           console.log("삭제 실패", err);
@@ -40,7 +42,21 @@ const PostDetailPage = () => {
         });
     }
   };
-  const loginUserName = "한시연"
+
+  const handleCommentSubmit = () => {
+    if (newComment.trim() === "") return alert("댓글을 입력해주세요!");
+
+    axios.post(`/tip/${id}/comment`, { content: newComment })
+      .then(() => {
+        setNewComment("");  // 입력창 초기화
+        fetchComments();    // 댓글 새로고침
+      })
+      .catch((err) => {
+        console.log("댓글 작성 실패", err);
+        alert("댓글 작성 실패");
+      });
+  };
+
   if (!postMessage) return <p>해당 글을 찾을 수 없습니다.</p>;
 
   return (
@@ -61,16 +77,40 @@ const PostDetailPage = () => {
               날짜 : {postMessage.createdAt?.split("T")[0]}
             </div>
           </div>
-
-          {/* 스크랩 버튼 */}
-          {/* <div className="scrap-btn" onClick={handleScrap}>
-            <img src={isScrapped ? bookmarkFilled : bookmarkOutline} alt="스크랩" />
-            <span>스크랩하기</span>
-          </div> */}
         </div>
 
         <div className="postdetail-content">
           {postMessage.content}
+        </div>
+
+        {/* 댓글 영역 */}
+        <div className="comment-section">
+          <h3>댓글</h3>
+
+          {comments.length === 0 ? (
+            <p>첫 댓글을 남겨보세요!</p>
+          ) : (
+            comments.map((comment) => (
+              <div key={comment.commentId} className="comment-item">
+                <strong>{comment.authorName}</strong> | {comment.createdAt?.split("T")[0]}
+                <p>{comment.content}</p>
+              </div>
+            ))
+          )}
+
+          <div className="comment-input-wrap">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="댓글을 입력하세요."
+            />
+            <button
+              onClick={handleCommentSubmit}
+              disabled={newComment.trim() === ""}
+            >
+              등록
+            </button>
+          </div>
         </div>
 
         {postMessage.userName === loginUserName && (
