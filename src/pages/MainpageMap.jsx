@@ -41,6 +41,7 @@ const MainPageMap = () => {
   const [reviewData, setReviewData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [userInfo, setUserInfo] = useState(null);
 
   const itemsPerPage = 5;
   const startIdx = currentPage * itemsPerPage;
@@ -65,6 +66,10 @@ const MainPageMap = () => {
       .catch((err) => {
         console.log("마커 데이터 오류", err);
       });
+    
+    axios.get(`/getuserinfo`)
+    .then((res) => setUserInfo(res.data))
+    .catch((err) => console.log("유저 정보 불러오기 실패", err));
   }, []);
 
   const handleMarkerClick = useCallback((map, marker, place) => {
@@ -129,6 +134,29 @@ const MainPageMap = () => {
       });
   }, []);
 
+  const handleDelete = reviewId => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      axios.delete(`/place/review/${reviewId}`)
+        .then(() => {
+          alert("삭제가 완료되었습니다.");
+          // 리뷰 목록 새로고침
+          axios.get(`/place/${selectedMarkerId}/review`)
+            .then(res => {
+              setReviewData(res.data.reviews);
+              setTotalPages(Math.ceil(res.data.reviews.length / itemsPerPage));
+              setCurrentPage(0);
+            })
+            .catch(err => {
+              console.error("리뷰 새로고침 실패", err);
+            });
+        })
+        .catch((err) => {
+          console.log("삭제 실패", err);
+          alert("삭제 실패");
+        });
+    }
+  };
+  
   useEffect(() => {
     if (!container.current || !window.naver || !window.naver.maps) return;
 
@@ -190,6 +218,7 @@ const MainPageMap = () => {
     }
   }, [targetPlaceId, markerData, handleMarkerClick]);
 
+  
 
   return (
     <Wrap>
@@ -241,8 +270,9 @@ const MainPageMap = () => {
                         </StarWrapper>
                         <Description>{review.content}</Description>
                       </ContentText>
-
-                      <DeleteButton>삭제</DeleteButton>
+                      {review.userId === userInfo.userId && (
+                        <DeleteButton onClick={() => handleDelete(review.reviewId)}>삭제</DeleteButton>
+                      )}
                     </ContentRow>
                   ))
                 ) : (
