@@ -1,42 +1,63 @@
-import { useEffect } from "react";
+// import axios from "../api/AxiosInstance";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import Loading from "./Loading";
 
 const GoogleLoginHandler = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
   const code = searchParams.get("code");
-  console.log("받은 코드:", code);
-
   if (!code) {
     navigate("/");
     return;
   }
 
-  fetch(`http://localhost:8080/auth/google/login?code=${code}`)
-    .then(res => {
-      console.log("응답상태:", res.status);
-      if (!res.ok) throw new Error("토큰 요청 실패");
-      return res.json();
-    })
-    .then(data => {
-      console.log("받은 데이터:", data);
-      localStorage.setItem("access_token", data.accessToken);
-      localStorage.setItem("refresh_token", data.refreshToken);
+  if(sessionStorage.getItem("google_oauth_code") === code) {
+    // 이미 처리된 코드라면 중복 요청 방지
+    navigate("/mypage");
+    return;
+  }
+
+  sessionStorage.setItem("google_oauth_code", code);
+
+  const existingToken = localStorage.getItem("access_token");
+  if(existingToken) {
+    navigate("/mypage");
+    return;
+  }
+
+  axios.get("http://localhost:8080/auth/google", {
+    params: { code }
+  })
+  .then((res) => {
+    const {accessToken, refreshToken } = res.data;
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
+    setTimeout(() => {
       navigate("/mypage", { replace: true });
-    })
-    .catch(err => {
-      console.error("에러:", err);
-      navigate("/");
-    });
+    }, 1300);
+  })
+  .catch((err) => {
+    console.error("구글 로그인 실패:", err.response?.data || err.message);
+    navigate("/");
+  })
+  .finally(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  });
+
 }, [searchParams, navigate]);
 
-  return (
-    <div>
-      구글 로그인 처리 중입니다🌐
-    </div>
-  );
+  if(loading) {
+    return <Loading />
+  }
+
+  return null;
 };
 
 export default GoogleLoginHandler;

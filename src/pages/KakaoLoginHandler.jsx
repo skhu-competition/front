@@ -1,16 +1,18 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import axios from "../api/AxiosInstance";
+import Loading from "./Loading";
 
 const KakaoLoginHandler = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-  const code = searchParams.get("code");
-  if (!code) {
-    navigate("/");
-    return;
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (!code) {
+      navigate("/");
+      return;
   }
 
   if (sessionStorage.getItem("kakao_oauth_code") === code) {
@@ -39,14 +41,17 @@ const KakaoLoginHandler = () => {
     .catch((err) => {
       console.error("카카오 로그인 실패:", err.response?.data || err.message);
       navigate("/");
-    });
+    })
+    .finally(() => {
+      setLoading(false);
+    });    
 
 }, [searchParams, navigate]);
 
-    return (
-      <div>
-        카카오 로그인중입니다람쥐🐿️
-      </div>
-    )
+  if(loading) {
+      return <Loading />
+    }
+    
+  return null;
 }
 export default KakaoLoginHandler
