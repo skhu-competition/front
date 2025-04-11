@@ -168,6 +168,7 @@ const PostDetailPage = () => {
 
         {postMessage.userId === userInfo.userId && (
           <div className="postdetail-btns">
+            <button className="edit-btn" onClick={() => navigate(`/post/edit/${id}`)}>수정</button>
             <button className="delete-btn" onClick={handleDelete}>삭제</button>
           </div>
         )}

@@ -85,7 +85,7 @@
 }
 
 /* ✅ 게시글 내용 */
-.postdetail-content {
+.content {
   margin-top: 3rem;
   font-size: 18px;
   line-height: 1.6;
@@ -110,22 +110,36 @@
 }
 
 .postdetail-btns {
-  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 2rem;
 }
 
-.edit-btn, .delete-btn {
-  padding: 8px 14px;
+.edit-btn {
+  padding: 0.5rem 1rem;
+  background-color: #7DA7D9;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
+.edit-btn:hover {
+  background-color: #6b94c5;
+}
+
 .delete-btn {
-  background-color: #f44336;
+  padding: 0.5rem 1rem;
+  background-color: #FF8882;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #e97670;
 }
 
 .comment-section {
