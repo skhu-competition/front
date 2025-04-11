@@ -1,5 +1,4 @@
-// import axios from "../api/AxiosInstance";
-import axios from "axios";
+import axios from "../api/AxiosInstance";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "./Loading";
@@ -30,7 +29,7 @@ const GoogleLoginHandler = () => {
     return;
   }
 
-  axios.get("http://localhost:8080/auth/google", {
+  axios.get("/auth/google", {
     params: { code }
   })
   .then((res) => {
