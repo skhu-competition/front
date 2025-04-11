@@ -94,10 +94,10 @@ const CategoryPage = () => {
     setImage(null);
     setPreview(null);
   } catch (err) {
-    console.log("게시글 전송 실패", err);
-    setIsModalOpen(false);
-    setTitle("");
-    setContent("");
+      console.log("게시글 전송 실패", err);
+      setIsModalOpen(false);
+      setTitle("");
+      setContent("");
   }
 };
 

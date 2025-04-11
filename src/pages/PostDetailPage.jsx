@@ -111,7 +111,7 @@ const PostDetailPage = () => {
 
   return (
     <div className="wrap">
-      <button className="close-detail-btn" onClick={() => navigate(-1)}>
+      <button className="close-detail-btn" onClick={() => navigate(`/mainpagehoney`)}>
         <img src={xIcon} alt="닫기" className="close-icon" />
       </button>
       <button className="scrap-btn" onClick={handleScrap}>
@@ -166,7 +166,7 @@ const PostDetailPage = () => {
           </div>
         </div>
 
-        {postMessage.userId === userInfo.userId && (
+        {userInfo && postMessage.userId === userInfo.userId && (
           <div className="postdetail-btns">
             <button className="edit-btn" onClick={() => navigate(`/post/edit/${id}`)}>수정</button>
             <button className="delete-btn" onClick={handleDelete}>삭제</button>

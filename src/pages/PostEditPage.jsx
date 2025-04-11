@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../api/AxiosInstance";
 import "./css/PostEditPage.css";
+import paperIcon from "../assets/paper-icon.png";
 
 const PostEditPage = () => {
   const { id } = useParams();
@@ -38,28 +39,44 @@ const PostEditPage = () => {
     }
   };
 
-  const handleUpdate = () => {
-    if (title.trim() === "" || content.trim() === "") {
+  const handleUpdate = async () => {
+    if (!title.trim() || !content.trim()) {
       alert("제목과 내용을 입력해주세요.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (image) formData.append("image", image);
+    let fileToSend = image;
 
-    axios.put(`/tip/${id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-      .then(() => {
-        alert("수정이 완료되었습니다.");
-        navigate(`/post/${id}`);
-      })
-      .catch((err) => {
-        console.log("수정 실패", err);
-        alert("게시글 수정에 실패했습니다.");
+    try {
+      if (!image) {
+        const response = await fetch(paperIcon); // 기본 이미지 불러오기
+        const blob = await response.blob();
+        fileToSend = new File([blob], "default.png", { type: blob.type });
+      }
+
+      formData.append("image", fileToSend);
+
+      const uploadRes = await axios.post('/file/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
+
+      const fileUrl = uploadRes.data.fileUrl;
+
+      await axios.patch(`/tip/${id}`, {
+        title,
+        content,
+        image: fileUrl,
+      });
+
+      alert("수정이 완료되었습니다.");
+      navigate(`/post/${id}`);
+    } catch (err) {
+      console.error("수정 실패", err);
+      alert("게시글 수정에 실패했습니다.");
+    }
   };
 
   return (
