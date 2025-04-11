@@ -10,6 +10,7 @@ const PostEditPage = () => {
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [originImage, setOriginImage] = useState(null);
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -22,7 +23,8 @@ const PostEditPage = () => {
       .then((res) => {
         setTitle(res.data.title);
         setContent(res.data.content);
-        setPreviewImage(res.data.image); // 기존 이미지 미리보기
+        setOriginImage(res.data.image); // 기존 이미지 저장
+        setPreviewImage(res.data.image); // 미리보기용
       })
       .catch((err) => {
         console.log("post 불러오기 실패", err);
@@ -45,30 +47,24 @@ const PostEditPage = () => {
       return;
     }
 
-    const formData = new FormData();
-    let fileToSend = image;
+    let fileUrl = originImage; // 기본값은 기존 이미지 URL
 
     try {
-      if (!image) {
-        const response = await fetch(paperIcon); // 기본 이미지 불러오기
-        const blob = await response.blob();
-        fileToSend = new File([blob], "default.png", { type: blob.type });
+      if (image) { // 새 이미지 업로드 했을 때만 파일 업로드 진행
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const uploadRes = await axios.post('/file/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        fileUrl = uploadRes.data.fileUrl;
       }
-
-      formData.append("image", fileToSend);
-
-      const uploadRes = await axios.post('/file/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      const fileUrl = uploadRes.data.fileUrl;
 
       await axios.patch(`/tip/${id}`, {
         title,
         content,
-        image: fileUrl,
+        image: fileUrl, // 최종 이미지 URL 전송
       });
 
       alert("수정이 완료되었습니다.");
@@ -78,6 +74,7 @@ const PostEditPage = () => {
       alert("게시글 수정에 실패했습니다.");
     }
   };
+  
 
   return (
     <div className="edit-wrap">
