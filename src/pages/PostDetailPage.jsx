@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo.png";
 import paperIcon from "../assets/paper-icon.png";
 import xIcon from "../assets/x-icon.png";
+import bookmarkFilled from "../assets/bookmark-filled.png";
+import bookmarkOutline from "../assets/bookmark-outline.png";
 import axios from "../api/AxiosInstance";
 import "./css/PostDetailPage.css";
 
@@ -14,24 +16,38 @@ const PostDetailPage = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [userInfo, setUserInfo] = useState(null);
+  const [scrapList, setScrapList] = useState([]);
 
   useEffect(() => {
-    axios.get(`/getuserinfo`)
-    .then((res) => setUserInfo(res.data))
-    .catch((err) => console.log("유저 정보 불러오기 실패", err));
+    fetchUserInfo();
+    fetchPost();
+    fetchComments();  
+    fetchScrapList();
+  }, [id]);
 
+  const fetchUserInfo = () => {
+    axios.get(`/getuserinfo`)
+      .then((res) => setUserInfo(res.data))
+      .catch((err) => console.log("유저 정보 불러오기 실패", err));
+  }
+
+  const fetchPost = () => {
     axios.get(`/tip/${id}`)
       .then((res) => setPostMessage(res.data))
       .catch((err) => console.log("post 불러오기 실패", err));
-
-    fetchComments();  
-  }, [id]);
+  }
 
   const fetchComments = () => {
     axios.get(`/tip/${id}/comment`)
       .then((res) => setComments(res.data))
       .catch((err) => console.log("댓글 불러오기 실패", err));
   };
+
+  const fetchScrapList = () => {
+    axios.get(`/mypage/post/list`)
+      .then((res) => setScrapList(res.data))
+      .catch((err) => console.log("스크랩 목록 불러오기 실패", err));
+  }
 
   const handleDelete = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
@@ -61,12 +77,45 @@ const PostDetailPage = () => {
       });
   };
 
+  const isScrap = scrapList.some((post) => post.postId === Number(id));
+
+  const handleScrap = async () => {
+    if (!userInfo) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    if (isScrap) {
+      try {
+        await axios.delete(`/tip/favorite/${id}?userId=${userInfo.userId}`);
+        alert("스크랩 삭제 완료!");
+        fetchScrapList();
+      } catch (err) {
+        console.log("스크랩 삭제 실패", err)
+      }
+      console.log("스크랩 취소 API 호출 자리!");
+    } 
+    else {
+      try {
+        await axios.post(`/tip/favorite/${id}?userId=${userInfo.userId}`);
+        alert("스크랩 완료!");
+
+        fetchScrapList();
+      } catch (err) {
+        console.error("스크랩 실패", err);
+      }
+    }
+  };
+
   if (!postMessage) return <p>해당 글을 찾을 수 없습니다.</p>;
 
   return (
     <div className="wrap">
       <button className="close-detail-btn" onClick={() => navigate(-1)}>
         <img src={xIcon} alt="닫기" className="close-icon" />
+      </button>
+      <button className="scrap-btn" onClick={handleScrap}>
+        <img src={isScrap ? bookmarkFilled : bookmarkOutline} alt="스크랩" />
       </button>
 
       <img src={logo} alt="logo" className="title" onClick={() => navigate('/')} />
