@@ -52,13 +52,13 @@ const LoginButton = styled.img`
 
 const Login = () => {
   const kakaoLoginClick = () => {
-    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=http://localhost:3000/oauth/kakao&response_type=code`;
+    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=https://front-ruby-eta.vercel.app/oauth/kakao&response_type=code`;
     // const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=5fe5e6a8371801d6111e6555a77e630e&redirect_uri=https://front-ruby-eta.vercel.app/oauth/kakao&response_type=code`;
     window.location.href = kakaoLoginUrl;
   };
   const googleLoginClick = () => {
     // const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=https://front-ruby-eta.vercel.app/oauth/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email`;
-    const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=http://localhost:3000/oauth/google&response_type=token&scope=openid%20profile%20email`;
+    const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=386024538579-h9a29u0v67h2982jbfmp9ob1n4t98c5h.apps.googleusercontent.com&redirect_uri=https://front-ruby-eta.vercel.app/oauth/google&response_type=token&scope=openid%20profile%20email`;
 
     window.location.href = googleLoginUrl;
   };
